@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "deckforge"
+version = "0.1.0"
+description = ""
+authors = ["Jacob Sanford <jacob.josh.sanford@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask = "^3.0.3"
+
+[tool.poetry.scripts]
+"server" = "deckforge.commands.server:start_api_server"
+"mint" = "deckforge.card.minter:test_minter"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,30 @@
+[
+    {
+        "index": 0,
+        "timestamp": "1728746669.7867498",
+        "previous_hash": "0",
+        "hash": "471d6e0e0a579a661b5d2cf286c71ed608b7dfdd40ca10eba533d902cfc5b6bc",
+        "transactions": []
+    },
+    {
+        "index": 1,
+        "timestamp": "1728775569.9346628",
+        "previous_hash": "471d6e0e0a579a661b5d2cf286c71ed608b7dfdd40ca10eba533d902cfc5b6bc",
+        "hash": "c7cc270c7db5107e6a6b244ef15a5b6ffc2be1d23ef0863b35d6ac7cd51b3c05",
+        "transactions": [
+            {
+                "card_id": "14abe06d4c72ea7256b451103f43d1fad44d35922f53c3ccfeb3bc1c1895fc62",
+                "type": "mint",
+                "timestamp": "1728775569.9346583",
+                "data": {
+                    "title": "Warrior Knight",
+                    "description": "A brave knight skilled in combat.",
+                    "rarity": "common",
+                    "isFoil": false,
+                    "isBorderless": false,
+                    "isFullart": false
+                }
+            }
+        ]
+    }
+]

@@ -1,0 +1,6 @@
+yt_client_secret.json
+yt_token.json
+.venv/
+data/
+**/__pycache__/
+
