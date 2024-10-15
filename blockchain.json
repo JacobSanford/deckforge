@@ -1,30 +1,31 @@
 [
     {
         "index": 0,
-        "timestamp": "1728746669.7867498",
+        "timestamp": "1728996277.5397875",
         "previous_hash": "0",
-        "hash": "471d6e0e0a579a661b5d2cf286c71ed608b7dfdd40ca10eba533d902cfc5b6bc",
+        "hash": "bba290489683ed5f9b1bcc3af7195504315ecb16a7c8933de158b755eda32c56",
         "transactions": []
     },
     {
         "index": 1,
-        "timestamp": "1728775569.9346628",
-        "previous_hash": "471d6e0e0a579a661b5d2cf286c71ed608b7dfdd40ca10eba533d902cfc5b6bc",
-        "hash": "c7cc270c7db5107e6a6b244ef15a5b6ffc2be1d23ef0863b35d6ac7cd51b3c05",
+        "timestamp": "1728996289.4264436",
+        "previous_hash": "bba290489683ed5f9b1bcc3af7195504315ecb16a7c8933de158b755eda32c56",
+        "hash": "fd3d973287bb272fe53ecb746454f06e2deaac9ec66dc9095de8cadb6e1c003e",
         "transactions": [
             {
-                "card_id": "14abe06d4c72ea7256b451103f43d1fad44d35922f53c3ccfeb3bc1c1895fc62",
-                "type": "mint",
-                "timestamp": "1728775569.9346583",
+                "type": "mint_card",
+                "timestamp": "1728996289.4264417",
                 "data": {
-                    "title": "Warrior Knight",
-                    "description": "A brave knight skilled in combat.",
+                    "id": "ba9db0f894c4ed7238d78dce0c870e039ae58dd2b28f9813e27197fd7c7e75b1",
+                    "title": "Goblin Thief",
+                    "description": "A sneaky goblin who steals from enemies.",
                     "rarity": "common",
                     "isFoil": false,
                     "isBorderless": false,
                     "isFullart": false
                 }
             }
-        ]
+        ],
+        "smart_contracts": {}
     }
 ]

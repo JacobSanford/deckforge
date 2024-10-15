@@ -2,8 +2,8 @@ import json
 import os
 import hashlib
 import time
-import deckforge.card.TradingCard as TradingCard
 
+from binascii import unhexlify
 from deckforge.blockchain.contracts import SmartContract
 
 class Blockchain:
@@ -21,17 +21,20 @@ class Blockchain:
                 'previous_hash': '0',
                 'hash': self.hash_block('0', 0, str(time.time())),
                 'transactions': [],
-                'smart_contracts': self.load_smart_contracts()
+                # 'smart_contracts': self.genesis_smart_contracts()
             }
             self.chain.append(genesis_block)
             self.save_chain()
 
-    def load_smart_contracts(self):
+    def genesis_smart_contracts(self):
         """
-        Loads the initial smart contracts as a dictionary of name to code.
+        Loads the initial smart contracts.
         """
         return {
-            'mint_card': SmartContract.mint_card.__code__.co_code.hex()
+            'mint_card': SmartContract.mint_card.__code__.co_code.hex(),
+            'cards_metadata': SmartContract.cards_metadata.__code__.co_code.hex(),
+            'card_rarity': SmartContract.card_rarity.__code__.co_code.hex(),
+            'card_properties': SmartContract.card_properties.__code__.co_code.hex(),
         }
 
     def hash_block(self, previous_hash, index, timestamp):
@@ -61,15 +64,9 @@ class Blockchain:
                 self.chain = json.load(f)
 
     def execute_smart_contract(self, contract_name, *args, **kwargs):
-        """
-        Executes a smart contract method stored in any block.
-        """
-        for block in self.chain:
-            if 'smart_contracts' in block and contract_name in block['smart_contracts']:
-                smart_contract_code = bytes.fromhex(block['smart_contracts'][contract_name])
-                exec(smart_contract_code, globals())
-                method = globals()[contract_name]
-                return method(*args, **kwargs)
+        # Run smart contracts diretly from the SmartContract class
+        if hasattr(SmartContract, contract_name):
+            return getattr(SmartContract, contract_name)(*args, **kwargs)
         raise ValueError(f"Smart contract {contract_name} not found in the blockchain.")
 
     def register_smart_contract(self, contract_name, contract_code):
@@ -80,18 +77,3 @@ class Blockchain:
             contract_name: contract_code.hex()
         }
         self.add_block([], smart_contracts)
-
-    def write_card(self, card: TradingCard, wallet_owner: str):
-        """
-        Writes a minted TradingCard to the blockchain using the smart contract.
-        """
-        card_data = {
-            'title': card.title,
-            'description': card.description,
-            'rarity': card.rarity,
-            'isFoil': card.isFoil,
-            'isBorderless': card.isBorderless,
-            'isFullart': card.isFullart
-        }
-        transaction = self.execute_smart_contract('mint_card', card_data, wallet_owner)
-        self.add_block([transaction])

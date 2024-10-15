@@ -1,8 +1,11 @@
+import time
+
+from hashlib import sha256
 class TradingCard:
     def __init__(self, title: str, description: str, rarity: str, isFoil: bool=False, isBorderless: bool=False, isFullart: bool=False):
         if isBorderless and isFullart:
             raise ValueError("A card cannot be both borderless and fullart at the same time.")
-        
+        self.id = sha256(f"{title}{description}{rarity}{time.time()}".encode()).hexdigest()
         self.title = title
         self.description = description
         self.rarity = rarity
