@@ -1,16 +1,21 @@
 import time
 import random
 
+from deckforge.blockchain.crypto import extract_pubkey_from_sig, valid_secp256k1_pubkey, pubkey_to_pubaddress, validate_signature
+
 class SmartContract:
     @staticmethod
-    def mint_card(blockchain, owner: str):
+    def mint_card(blockchain, wallet_address: str):
+        # Check if the wallet address is valid.
+
+
         all_cards_metadata = blockchain.execute_smart_contract('cards_metadata')
         card_rarity = blockchain.execute_smart_contract('card_rarity')
         cards_of_rarity = [card for card in all_cards_metadata if card['rarity'] == card_rarity]
         base_card = random.choice(cards_of_rarity)
         foil, fullart, borderless = blockchain.execute_smart_contract('card_properties')
         card_data = {
-            'id': blockchain.hash_block(owner, len(blockchain.chain), str(time.time())),
+            'id': blockchain.hash_block(wallet_address, len(blockchain.chain), str(time.time())),
             'title': base_card['title'],
             'description': base_card['description'],
             'rarity': card_rarity,
@@ -24,19 +29,42 @@ class SmartContract:
             'data': card_data
         }
         blockchain.add_block([transaction])
+        blockchain.execute_smart_contract('transfer_card', blockchain, card_data['id'], wallet_address)
 
-        # Add a transfer transaction to transfer the card to the owner
+    @staticmethod
+    def transfer_card(blockchain, card_id: str, to_address: str, signature: str=''):
+        if not blockchain.card_exists(card_id):
+            raise ValueError(f"Card with ID {card_id} does not exist.")
+
+        owner_address = blockchain.get_card_wallet(card_id)
+        if owner_address == None:
+            # This is a minted card.
+            owner_address = blockchain.NULL_ADDRESS
+        else:
+            if not signature:
+                raise ValueError("Signature is required for transferring a card.")
+
+            sig_pubkey = extract_pubkey_from_sig(signature, card_id)
+            sig_address = pubkey_to_pubaddress(sig_pubkey)
+            if sig_address != owner_address:
+                raise ValueError("Invalid signature owner for transferring card.")
+
+            sig_is_valid = validate_signature(signature, sig_pubkey, to_address)
+            if not sig_is_valid:
+                raise ValueError("Invalid signature for transferring card.")
+
+        # Transaction can proceed.
         transfer_transaction = {
             'type': 'transfer_card',
             'timestamp': str(time.time()),
             'data': {
-                'card_id': card_data['id'],
-                'from': 'system',
-                'to': owner
+                'card_id': card_id,
+                'from': owner_address,
+                'to': to_address
             }
         }
         blockchain.add_block([transfer_transaction])
-         
+
     @staticmethod
     def card_properties():
         """
@@ -132,9 +160,3 @@ class SmartContract:
             }
         ]
 
-    @staticmethod
-    def from_code(code):
-        """
-        Convert a smart contract from bytecode.
-        """
-        return SmartContract.__code__.replace(co_code=bytes.fromhex(code))

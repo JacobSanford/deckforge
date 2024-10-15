@@ -7,11 +7,14 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+cryptography = "^43.0.1"
+ecdsa = "^0.19.0"
 flask = "^3.0.3"
+web3 = "^7.3.1"
 
 [tool.poetry.scripts]
 "server" = "deckforge.commands.server:start_api_server"
-"mint" = "deckforge.card.minter:test_minter"
+"wallet:generate" = "deckforge.commands.wallet:generate_wallet"
 
 [build-system]
 requires = ["poetry-core"]

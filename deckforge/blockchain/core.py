@@ -7,6 +7,8 @@ from binascii import unhexlify
 from deckforge.blockchain.contracts import SmartContract
 
 class Blockchain:
+    NULL_ADDRESS = '0x0000000000000000000000000000000000000000'
+
     def __init__(self, file_path='blockchain.json'):
         self.file_path = file_path
         self.chain = []
@@ -77,3 +79,17 @@ class Blockchain:
             contract_name: contract_code.hex()
         }
         self.add_block([], smart_contracts)
+
+    def card_exists(self, card_id):
+        for block in self.chain:
+            for transaction in block['transactions']:
+                if transaction['type'] == 'mint_card' and transaction['data']['id'] == card_id:
+                    return True
+        return False
+    
+    def get_card_wallet(self, card_id):
+        for block in self.chain:
+            for transaction in block['transactions']:
+                if transaction['type'] == 'transfer_card' and transaction['data']['card_id'] == card_id:
+                    return transaction['data']['to']
+        return None

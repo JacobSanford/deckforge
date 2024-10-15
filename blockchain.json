@@ -1,28 +1,46 @@
 [
     {
         "index": 0,
-        "timestamp": "1728996277.5397875",
+        "timestamp": "1729006166.3534734",
         "previous_hash": "0",
-        "hash": "bba290489683ed5f9b1bcc3af7195504315ecb16a7c8933de158b755eda32c56",
+        "hash": "34a01ad9a1264a845c59713ea85f2f237221275c15449b77f73f492f1a10c39d",
         "transactions": []
     },
     {
         "index": 1,
-        "timestamp": "1728996289.4264436",
-        "previous_hash": "bba290489683ed5f9b1bcc3af7195504315ecb16a7c8933de158b755eda32c56",
-        "hash": "fd3d973287bb272fe53ecb746454f06e2deaac9ec66dc9095de8cadb6e1c003e",
+        "timestamp": "1729006169.2415373",
+        "previous_hash": "34a01ad9a1264a845c59713ea85f2f237221275c15449b77f73f492f1a10c39d",
+        "hash": "baf01e50b77b2d32eae2d1850470adb4229314cbdae85b573d108b85afe7b772",
         "transactions": [
             {
                 "type": "mint_card",
-                "timestamp": "1728996289.4264417",
+                "timestamp": "1729006169.2415335",
                 "data": {
-                    "id": "ba9db0f894c4ed7238d78dce0c870e039ae58dd2b28f9813e27197fd7c7e75b1",
-                    "title": "Goblin Thief",
-                    "description": "A sneaky goblin who steals from enemies.",
-                    "rarity": "common",
+                    "id": "eb3e59aa218ac23bd3b69bc8acad7050bc2639f0a6531eb49e8c60bbb37faadd",
+                    "title": "Mystic Elf",
+                    "description": "An elf with mystical powers and high intelligence.",
+                    "rarity": "uncommon",
                     "isFoil": false,
                     "isBorderless": false,
                     "isFullart": false
+                }
+            }
+        ],
+        "smart_contracts": {}
+    },
+    {
+        "index": 2,
+        "timestamp": "1729006169.2417948",
+        "previous_hash": "baf01e50b77b2d32eae2d1850470adb4229314cbdae85b573d108b85afe7b772",
+        "hash": "cca146a137f5b8550fb1cdce8ccdd0232a7fa986c10c6455fd96f25ff9ee069a",
+        "transactions": [
+            {
+                "type": "transfer_card",
+                "timestamp": "1729006169.2417889",
+                "data": {
+                    "card_id": "eb3e59aa218ac23bd3b69bc8acad7050bc2639f0a6531eb49e8c60bbb37faadd",
+                    "from": "0x0000000000000000000000000000000000000000",
+                    "to": "0x60333F6F01199ddFfAa9fdB1C7fD94E887ac7758"
                 }
             }
         ],
