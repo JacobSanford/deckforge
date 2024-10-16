@@ -1,13 +1,14 @@
 import time
 import random
 
-from deckforge.blockchain.crypto import extract_pubkey_from_sig, valid_secp256k1_pubkey, pubkey_to_pubaddress, validate_signature
+from deckforge.blockchain.crypto import extract_pubkey_from_sig, valid_secp256k1_pubkey, pubkey_to_pubaddress, validate_signature, check_wallet_checksum
 
 class SmartContract:
     @staticmethod
     def mint_card(blockchain, wallet_address: str):
         # Check if the wallet address is valid.
-
+        if check_wallet_checksum(wallet_address) == False:
+            raise ValueError("Invalid wallet address.")
 
         all_cards_metadata = blockchain.execute_smart_contract('cards_metadata')
         card_rarity = blockchain.execute_smart_contract('card_rarity')

@@ -109,3 +109,15 @@ def generate_keypair() -> tuple[str, str]:
     priv_key = SigningKey.generate(curve=SECP256k1)
     pub_key = priv_key.get_verifying_key()
     return priv_key.to_string().hex(), pub_key.to_string().hex()
+
+def check_wallet_checksum(wallet_address: str) -> bool:
+    """
+    Check the checksum of a wallet address.
+
+    Args:
+        wallet_address (str): The wallet address to check.
+
+    Returns:
+        bool: True if the checksum is valid, False otherwise.
+    """
+    return web3.Web3.is_address(wallet_address)
