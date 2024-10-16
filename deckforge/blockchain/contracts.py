@@ -10,6 +10,11 @@ class SmartContract:
         if check_wallet_checksum(wallet_address) == False:
             raise ValueError("Invalid wallet address.")
 
+        # Check if the maximum card count has been reached.
+        cards_remaining = blockchain.execute_smart_contract('get_cards_remaining', blockchain)
+        if cards_remaining <= 0:
+            raise ValueError("Maximum card count reached. No more cards can be minted.")
+
         all_cards_metadata = blockchain.execute_smart_contract('cards_metadata')
         card_rarity = blockchain.execute_smart_contract('card_rarity')
         cards_of_rarity = [card for card in all_cards_metadata if card['rarity'] == card_rarity]
@@ -27,10 +32,24 @@ class SmartContract:
         transaction = {
             'type': 'mint_card',
             'timestamp': str(time.time()),
-            'data': card_data
+            'data': card_data,
         }
         blockchain.add_block([transaction])
         blockchain.execute_smart_contract('transfer_card', blockchain, card_data['id'], wallet_address)
+
+    @staticmethod
+    def get_cards_remaining(blockchain):
+        if blockchain.chain[0].get('mint_limit') == None:
+            raise ValueError(f"Error: Mint total not found in the genesis block.")
+        minted_cards = 0
+        for block in blockchain.chain:
+            for transaction in block['transactions']:
+                if transaction['type'] == 'mint_card':
+                    minted_cards += 1
+        cards_remaining = blockchain.chain[0]['cards_remaining'] - minted_cards
+        if cards_remaining < 0:
+            raise ValueError(f"Error: Negative cards remaining.")
+        return cards_remaining
 
     @staticmethod
     def transfer_card(blockchain, card_id: str, to_address: str, signature: str=''):

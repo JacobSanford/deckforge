@@ -23,7 +23,7 @@ class Blockchain:
                 'previous_hash': '0',
                 'hash': self.hash_block('0', 0, str(time.time())),
                 'transactions': [],
-                # 'smart_contracts': self.genesis_smart_contracts()
+                'mint_limit': 5000,
             }
             self.chain.append(genesis_block)
             self.save_chain()
