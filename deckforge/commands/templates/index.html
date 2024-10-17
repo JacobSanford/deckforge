@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Administration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Card Administration</h1>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Rarity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="card-table-body">
+                <!-- Cards will be dynamically inserted here -->
+            </tbody>
+        </table>
+        <button class="btn btn-primary" onclick="showAddCardModal()">Add Card</button>
+    </div>
+
+    <!-- Add/Edit Card Modal -->
+    <div class="modal" tabindex="-1" role="dialog" id="cardModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Add Card</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="cardForm">
+                        <div class="form-group">
+                            <label for="cardId">ID</label>
+                            <input type="text" class="form-control" id="cardId" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardName">Name</label>
+                            <input type="text" class="form-control" id="cardName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardType">Type</label>
+                            <input type="text" class="form-control" id="cardType" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardRarity">Rarity</label>
+                            <select class="form-control" id="cardRarity" required>
+                                <option value="Common">Common</option>
+                                <option value="Uncommon">Uncommon</option>
+                                <option value="Rare">Rare</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveCardButton" onclick="saveCard()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        let currentCardId = null;
+
+        function fetchCards() {
+        $.get('/cards', function(cards) {
+            const cardTableBody = $('#card-table-body');
+            cardTableBody.empty();
+            cards.forEach((card, index) => {
+                cardTableBody.append(`
+                    <tr>
+                        <td>${card.id}</td>
+                        <td>${card.title}</td>
+                        <td>${card.description}</td>
+                        <td>${card.rarity}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id}, '${card.title}', '${card.description}', '${card.rarity}')">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteCard(${index})">Delete</button>
+                        </td>
+                    </tr>
+                `);
+            });
+        });
+    }
+
+
+    function showAddCardModal() {
+        currentCardId = null;
+        $('#modalTitle').text('Add Card');
+        $('#cardId').val('');
+        $('#cardName').val('');
+        $('#cardType').val('');
+        $('#cardRarity').val('Common');
+        $('#cardModal').modal('show');
+    }
+
+    function showEditCardModal(id, title, description, rarity) {
+        currentCardId = id;
+        $('#modalTitle').text('Edit Card');
+        $('#cardId').val(id);
+        $('#cardName').val(title);
+        $('#cardType').val(description);
+        $('#cardRarity').val(rarity);
+        $('#cardModal').modal('show');
+    }
+
+    function saveCard() {
+        const card = {
+            id: currentCardId,
+            title: $('#cardName').val(),
+            description: $('#cardType').val(),
+            rarity: $('#cardRarity').val()
+        };
+
+        if (currentCardId === null) {
+            $.post('/cards', JSON.stringify(card), function() {
+                $('#cardModal').modal('hide');
+                fetchCards();
+            }, 'json');
+        } else {
+            $.ajax({
+                url: `/cards/${currentCardId}`,
+                type: 'PUT',
+                data: JSON.stringify(card),
+                contentType: 'application/json',
+                success: function() {
+                    $('#cardModal').modal('hide');
+                    fetchCards();
+                }
+            });
+        }
+    }
+
+    function deleteCard(id) {
+        $.ajax({
+            url: `/cards/${id}`,
+            type: 'DELETE',
+            success: function() {
+                fetchCards();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        fetchCards();
+    });
+    </script>
+</body>
+</html>

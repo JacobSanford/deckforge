@@ -16,7 +16,8 @@ web3 = "^7.3.1"
 [tool.poetry.scripts]
 "server" = "deckforge.commands.server:start_api_server"
 "wallet:generate" = "deckforge.commands.wallet:generate_wallet"
-"card:metadata" = "deckforge.commands.update:get_latest_card_metadata"
+"card:write-metadata" = "deckforge.commands.update:get_latest_card_metadata"
+"card:admin" = "deckforge.commands.cardadmin:start_admin_server"
 
 [build-system]
 requires = ["poetry-core"]
