@@ -33,7 +33,7 @@ def add_card():
     for card in data:
         if card['id'] > new_card_id:
             new_card_id = card['id'] + 1
-    new_card['id'] = new_card_id + 1
+    new_card['id'] = new_card_id
     data.append(new_card)
     write_data(data)
     return jsonify(new_card), 201

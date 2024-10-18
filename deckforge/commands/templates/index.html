@@ -127,7 +127,7 @@
                             <td>${card.rarity}</td>
                             <td>${card.type}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id}, '${card.title}', '${card.description}', '${card.rarity}', '${card.type}', '${card.text_ready}', '${card.image_ready}')">Edit</button>
+                                <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id}, '${card.title}', '${card.description}', '${card.rarity}', '${card.type}', ${card.text_ready}, ${card.image_ready})">Edit</button>
                                 <button class="btn btn-danger btn-sm" onclick="showDeleteConfirmationModal(${card.id})">Delete</button>
                             </td>
                         </tr>
