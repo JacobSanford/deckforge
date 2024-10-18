@@ -14,8 +14,9 @@
                 <tr>
                     <th>ID</th>
                     <th>Name</th>
-                    <th>Type</th>
+                    <th>Description</th>
                     <th>Rarity</th>
+                    <th>Type</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -58,6 +59,16 @@
                                 <option value="rare">Rare</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="cardType">Type</label>
+                            <select class="form-control" id="cardType" required>
+                                <option value="person">Person</option>
+                                <option value="place">Place</option>
+                                <option value="thing">Thing</option>
+                                <option value="culture">Culture</option>
+                                <option value="event">Event</option>
+                            </select>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -74,87 +85,90 @@
         let currentCardId = null;
 
         function fetchCards() {
-        $.get('/cards', function(cards) {
-            const cardTableBody = $('#card-table-body');
-            cardTableBody.empty();
-            cards.forEach((card, index) => {
-                cardTableBody.append(`
-                    <tr>
-                        <td>${card.id}</td>
-                        <td>${card.title}</td>
-                        <td>${card.description}</td>
-                        <td>${card.rarity}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id}, '${card.title}', '${card.description}', '${card.rarity}')">Edit</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteCard(${card.id})">Delete</button>
-                        </td>
-                    </tr>
-                `);
+            $.get('/cards', function(cards) {
+                const cardTableBody = $('#card-table-body');
+                cardTableBody.empty();
+                cards.forEach((card, index) => {
+                    cardTableBody.append(`
+                        <tr>
+                            <td>${card.id}</td>
+                            <td>${card.title}</td>
+                            <td>${card.description}</td>
+                            <td>${card.rarity}</td>
+                            <td>${card.type}</td> <!-- Display Type -->
+                            <td>
+                                <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id}, '${card.title}', '${card.description}', '${card.rarity}', '${card.type}')">Edit</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteCard(${card.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `);
+                });
             });
-        });
-    }
+        }
 
+        function showAddCardModal() {
+            currentCardId = null;
+            $('#modalTitle').text('Add Card');
+            $('#cardId').val('');
+            $('#cardName').val('');
+            $('#cardDescription').val('');
+            $('#cardRarity').val('common');
+            $('#cardType').val(''); // Clear Type field
+            $('#cardModal').modal('show');
+        }
 
-    function showAddCardModal() {
-        currentCardId = null;
-        $('#modalTitle').text('Add Card');
-        $('#cardId').val('');
-        $('#cardName').val('');
-        $('#cardDescription').val('');
-        $('#cardRarity').val('common');
-        $('#cardModal').modal('show');
-    }
+        function showEditCardModal(id, title, description, rarity, type) {
+            currentCardId = id;
+            $('#modalTitle').text('Edit Card');
+            $('#cardId').val(id);
+            $('#cardName').val(title);
+            $('#cardDescription').val(description);
+            $('#cardRarity').val(rarity);
+            $('#cardType').val(type); // Set Type field
+            $('#cardModal').modal('show');
+        }
 
-    function showEditCardModal(id, title, description, rarity) {
-        currentCardId = id;
-        $('#modalTitle').text('Edit Card');
-        $('#cardId').val(id);
-        $('#cardName').val(title);
-        $('#cardDescription').val(description);
-        $('#cardRarity').val(rarity);
-        $('#cardModal').modal('show');
-    }
+        function saveCard() {
+            const card = {
+                id: currentCardId,
+                title: $('#cardName').val(),
+                description: $('#cardDescription').val(),
+                rarity: $('#cardRarity').val(),
+                type: $('#cardType').val() // Include Type field
+            };
 
-    function saveCard() {
-        const card = {
-            id: currentCardId,
-            title: $('#cardName').val(),
-            description: $('#cardDescription').val(),
-            rarity: $('#cardRarity').val()
-        };
-
-        if (currentCardId === null) {
-            $.post('/cards', JSON.stringify(card), function() {
-                $('#cardModal').modal('hide');
-                fetchCards();
-            }, 'json');
-        } else {
-            $.ajax({
-                url: `/cards/${currentCardId}`,
-                type: 'PUT',
-                data: JSON.stringify(card),
-                contentType: 'application/json',
-                success: function() {
+            if (currentCardId === null) {
+                $.post('/cards', JSON.stringify(card), function() {
                     $('#cardModal').modal('hide');
+                    fetchCards();
+                }, 'json');
+            } else {
+                $.ajax({
+                    url: `/cards/${currentCardId}`,
+                    type: 'PUT',
+                    data: JSON.stringify(card),
+                    contentType: 'application/json',
+                    success: function() {
+                        $('#cardModal').modal('hide');
+                        fetchCards();
+                    }
+                });
+            }
+        }
+
+        function deleteCard(id) {
+            $.ajax({
+                url: `/cards/${id}`,
+                type: 'DELETE',
+                success: function() {
                     fetchCards();
                 }
             });
         }
-    }
 
-    function deleteCard(id) {
-        $.ajax({
-            url: `/cards/${id}`,
-            type: 'DELETE',
-            success: function() {
-                fetchCards();
-            }
+        $(document).ready(function() {
+            fetchCards();
         });
-    }
-
-    $(document).ready(function() {
-        fetchCards();
-    });
     </script>
 </body>
 </html>
