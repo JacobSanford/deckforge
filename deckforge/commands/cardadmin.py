@@ -30,13 +30,13 @@ def add_card():
     new_card = request.json
     data = read_data()
     for card in data:
-        if int(card['id']) > int(new_card['id'] or 0):
-            new_card['id'] = str(int(card['id']) + 1)
+        if card['id'] > new_card['id']:
+            new_card['id'] = card['id'] + 1
     data.append(new_card)
     write_data(data)
     return jsonify(new_card), 201
 
-@app.route('/cards/<string:card_id>', methods=['PUT'])
+@app.route('/cards/<int:card_id>', methods=['PUT'])
 def update_card(card_id):
     updated_card = request.json
     data = read_data()
@@ -47,7 +47,7 @@ def update_card(card_id):
             return jsonify(card)
     return jsonify({'error': 'Card not found'}), 404
 
-@app.route('/cards/<string:card_id>', methods=['DELETE'])
+@app.route('/cards/<int:card_id>', methods=['DELETE'])
 def delete_card(card_id):
     data = read_data()
     card_to_delete = {}

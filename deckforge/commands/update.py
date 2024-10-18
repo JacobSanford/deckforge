@@ -24,11 +24,13 @@ def get_latest_card_metadata():
                 row[i] = None
 
         card_metadata.append({
-            'id': row[0],
+            'id': int(row[0] or 0),
             'title': row[1],
             'type': row[2],
             'description': row[3],
-            'rarity': row[4]
+            'rarity': row[4],
+            'text_ready': bool(row[5]),
+            'images_ready': bool(row[6])
         })
     
     # Output this in pretty json format
