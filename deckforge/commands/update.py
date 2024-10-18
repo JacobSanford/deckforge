@@ -30,7 +30,7 @@ def get_latest_card_metadata():
             'description': row[3],
             'rarity': row[4],
             'text_ready': bool(row[5]),
-            'images_ready': bool(row[6])
+            'image_ready': bool(row[6])
         })
     
     # Output this in pretty json format

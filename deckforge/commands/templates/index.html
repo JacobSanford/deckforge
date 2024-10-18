@@ -69,6 +69,14 @@
                                 <option value="event">Event</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="cardTextReady">Text Ready</label>
+                            <input type="checkbox" class="form-control" id="cardTextReady">
+                        </div>
+                        <div class="form-group">
+                            <label for="cardImageReady">Image Ready</label>
+                            <input type="checkbox" class="form-control" id="cardImageReady">
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -119,7 +127,7 @@
                             <td>${card.rarity}</td>
                             <td>${card.type}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id}, '${card.title}', '${card.description}', '${card.rarity}', '${card.type}')">Edit</button>
+                                <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id}, '${card.title}', '${card.description}', '${card.rarity}', '${card.type}', '${card.text_ready}', '${card.image_ready}')">Edit</button>
                                 <button class="btn btn-danger btn-sm" onclick="showDeleteConfirmationModal(${card.id})">Delete</button>
                             </td>
                         </tr>
@@ -139,7 +147,7 @@
             $('#cardModal').modal('show');
         }
 
-        function showEditCardModal(id, title, description, rarity, type) {
+        function showEditCardModal(id, title, description, rarity, type, text_ready, image_ready) {
             currentCardId = id;
             $('#modalTitle').text('Edit Card');
             $('#cardId').val(id);
@@ -147,6 +155,8 @@
             $('#cardDescription').val(description);
             $('#cardRarity').val(rarity);
             $('#cardType').val(type);
+            $('#cardTextReady').prop('checked', text_ready);
+            $('#cardImageReady').prop('checked', image_ready);
             $('#cardModal').modal('show');
         }
 
@@ -155,9 +165,10 @@
                 id: currentCardId,
                 title: $('#cardName').val(),
                 description: $('#cardDescription').val(),
-                contentType: 'application/json',
                 rarity: $('#cardRarity').val(),
-                type: $('#cardType').val()
+                type: $('#cardType').val(),
+                text_ready: $('#cardTextReady').prop('checked'),
+                image_ready: $('#cardImageReady').prop('checked')
             };
 
             if (currentCardId === null) {
