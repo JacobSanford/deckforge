@@ -33,24 +33,30 @@ def add_card():
     write_data(data)
     return jsonify(new_card), 201
 
-@app.route('/cards/<int:card_id>', methods=['PUT'])
+@app.route('/cards/<string:card_id>', methods=['PUT'])
 def update_card(card_id):
     updated_card = request.json
     data = read_data()
-    if 0 <= card_id < len(data):
-        data[card_id] = updated_card
-        write_data(data)
-        return jsonify(updated_card)
+    for card in data:
+        if card['id'] == card_id:
+            card.update(updated_card)
+            write_data(data)
+            return jsonify(card)
     return jsonify({'error': 'Card not found'}), 404
 
-@app.route('/cards/<int:card_id>', methods=['DELETE'])
+@app.route('/cards/<string:card_id>', methods=['DELETE'])
 def delete_card(card_id):
     data = read_data()
-    if 0 <= card_id < len(data):
-        deleted_card = data.pop(card_id)
-        write_data(data)
-        return jsonify(deleted_card)
-    return jsonify({'error': 'Card not found'}), 404
+    card_to_delete = {}
+    for card in data:
+        if card['id'] == card_id:
+            card_to_delete = card
+    if card_to_delete == {}:
+        return jsonify({'error': 'Card not found'}), 404
+
+    data.remove(card_to_delete)
+    write_data(data)
+    return jsonify(card_to_delete)
 
 def start_admin_server():
     app.run(debug=True)
