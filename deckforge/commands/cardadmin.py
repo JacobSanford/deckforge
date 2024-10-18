@@ -29,9 +29,11 @@ def get_cards():
 def add_card():
     new_card = request.json
     data = read_data()
+    new_card_id = 0
     for card in data:
-        if card['id'] > new_card['id']:
-            new_card['id'] = card['id'] + 1
+        if card['id'] > new_card_id:
+            new_card_id = card['id'] + 1
+    new_card['id'] = new_card_id + 1
     data.append(new_card)
     write_data(data)
     return jsonify(new_card), 201
