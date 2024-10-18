@@ -47,15 +47,15 @@
                             <input type="text" class="form-control" id="cardName" required>
                         </div>
                         <div class="form-group">
-                            <label for="cardType">Type</label>
-                            <input type="text" class="form-control" id="cardType" required>
+                            <label for="cardDescription">Description</label>
+                            <input type="text" class="form-control" id="cardDescription" required>
                         </div>
                         <div class="form-group">
                             <label for="cardRarity">Rarity</label>
                             <select class="form-control" id="cardRarity" required>
-                                <option value="Common">Common</option>
-                                <option value="Uncommon">Uncommon</option>
-                                <option value="Rare">Rare</option>
+                                <option value="common">Common</option>
+                                <option value="uncommon">Uncommon</option>
+                                <option value="rare">Rare</option>
                             </select>
                         </div>
                     </form>
@@ -86,7 +86,7 @@
                         <td>${card.rarity}</td>
                         <td>
                             <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id}, '${card.title}', '${card.description}', '${card.rarity}')">Edit</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteCard(${index})">Delete</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteCard(${card.id})">Delete</button>
                         </td>
                     </tr>
                 `);
@@ -100,8 +100,8 @@
         $('#modalTitle').text('Add Card');
         $('#cardId').val('');
         $('#cardName').val('');
-        $('#cardType').val('');
-        $('#cardRarity').val('Common');
+        $('#cardDescription').val('');
+        $('#cardRarity').val('common');
         $('#cardModal').modal('show');
     }
 
@@ -110,7 +110,7 @@
         $('#modalTitle').text('Edit Card');
         $('#cardId').val(id);
         $('#cardName').val(title);
-        $('#cardType').val(description);
+        $('#cardDescription').val(description);
         $('#cardRarity').val(rarity);
         $('#cardModal').modal('show');
     }
@@ -119,7 +119,7 @@
         const card = {
             id: currentCardId,
             title: $('#cardName').val(),
-            description: $('#cardType').val(),
+            description: $('#cardDescription').val(),
             rarity: $('#cardRarity').val()
         };
 
