@@ -62,7 +62,7 @@
                         <div class="form-group">
                             <label for="cardType">Type</label>
                             <select class="form-control" id="cardType" required>
-                                <option value="person">Person</option>
+                                <option value="person" selected>Person</option>
                                 <option value="place">Place</option>
                                 <option value="thing">Thing</option>
                                 <option value="culture">Culture</option>
@@ -95,7 +95,7 @@
                             <td>${card.title}</td>
                             <td>${card.description}</td>
                             <td>${card.rarity}</td>
-                            <td>${card.type}</td> <!-- Display Type -->
+                            <td>${card.type}</td>
                             <td>
                                 <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id}, '${card.title}', '${card.description}', '${card.rarity}', '${card.type}')">Edit</button>
                                 <button class="btn btn-danger btn-sm" onclick="deleteCard(${card.id})">Delete</button>
@@ -133,15 +133,22 @@
                 id: currentCardId,
                 title: $('#cardName').val(),
                 description: $('#cardDescription').val(),
+                contentType: 'application/json',
                 rarity: $('#cardRarity').val(),
-                type: $('#cardType').val() // Include Type field
+                type: $('#cardType').val()
             };
 
             if (currentCardId === null) {
-                $.post('/cards', JSON.stringify(card), function() {
-                    $('#cardModal').modal('hide');
-                    fetchCards();
-                }, 'json');
+                $.post({
+                    url: '/cards',
+                    data: JSON.stringify(card),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function() {
+                        $('#cardModal').modal('hide');
+                        fetchCards();
+                    }
+                });
             } else {
                 $.ajax({
                     url: `/cards/${currentCardId}`,
