@@ -38,6 +38,15 @@ def add_card():
     write_data(data)
     return jsonify(new_card), 201
 
+@app.route('/cards/<int:card_id>', methods=['GET'])
+def get_card(card_id):
+    data = read_data()
+    for card in data:
+        if card['id'] == card_id:
+            return jsonify(card)
+    return jsonify({'error': 'Card not found'}), 404
+
+
 @app.route('/cards/<int:card_id>', methods=['PUT'])
 def update_card(card_id):
     updated_card = request.json

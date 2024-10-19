@@ -127,7 +127,7 @@
                             <td>${card.rarity}</td>
                             <td>${card.type}</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id}, '${card.title}', '${card.description}', '${card.rarity}', '${card.type}', ${card.text_ready}, ${card.image_ready})">Edit</button>
+                                <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id})">Edit</button>
                                 <button class="btn btn-danger btn-sm" onclick="showDeleteConfirmationModal(${card.id})">Delete</button>
                             </td>
                         </tr>
@@ -147,17 +147,19 @@
             $('#cardModal').modal('show');
         }
 
-        function showEditCardModal(id, title, description, rarity, type, text_ready, image_ready) {
-            currentCardId = id;
-            $('#modalTitle').text('Edit Card');
-            $('#cardId').val(id);
-            $('#cardName').val(title);
-            $('#cardDescription').val(description);
-            $('#cardRarity').val(rarity);
-            $('#cardType').val(type);
-            $('#cardTextReady').prop('checked', text_ready);
-            $('#cardImageReady').prop('checked', image_ready);
-            $('#cardModal').modal('show');
+        function showEditCardModal(id) {
+            $.get(`/cards/${id}`, function(card) {
+                currentCardId = card.id;
+                $('#modalTitle').text('Edit Card');
+                $('#cardId').val(card.id);
+                $('#cardName').val(card.title);
+                $('#cardDescription').val(card.description);
+                $('#cardRarity').val(card.rarity);
+                $('#cardType').val(card.type);
+                $('#cardTextReady').prop('checked', card.text_ready);
+                $('#cardImageReady').prop('checked', card.image_ready);
+                $('#cardModal').modal('show');
+            });
         }
 
         function saveCard() {
