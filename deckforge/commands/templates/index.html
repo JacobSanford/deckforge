@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Card Administration</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -108,8 +110,6 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         let currentCardId = null;
         let cardIdToDelete = null;
@@ -119,12 +119,24 @@
                 const cardTableBody = $('#card-table-body');
                 cardTableBody.empty();
                 cards.forEach((card, index) => {
+                    let rarityClass = '';
+                    switch (card.rarity) {
+                        case 'common':
+                            rarityClass = 'badge badge-pill badge-success';
+                            break;
+                        case 'uncommon':
+                            rarityClass = 'badge badge-pill badge-primary';
+                            break;
+                        case 'rare':
+                            rarityClass = 'badge badge-pill badge-info';
+                            break;
+                    }
                     cardTableBody.append(`
                         <tr>
                             <td>${card.id}</td>
                             <td>${card.title}</td>
                             <td>${card.description}</td>
-                            <td>${card.rarity}</td>
+                            <td><span class="${rarityClass}">${card.rarity}</span></td>
                             <td>${card.type}</td>
                             <td>
                                 <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id})">Edit</button>
