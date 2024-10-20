@@ -82,6 +82,7 @@
                         <div class="form-group">
                             <label for="cardImage">Image</label>
                             <input type="file" class="form-control" id="cardImage" name="cardImage">
+                            <img id="cardImagePreview" src="" alt="Card Image" style="display: none; width: 100px; margin-top: 10px;">
                         </div>
                     </form>
                 </div>
@@ -174,6 +175,14 @@
                 $('#cardType').val(card.type);
                 $('#cardTextReady').prop('checked', card.text_ready);
                 $('#cardImageReady').prop('checked', card.image_ready);
+
+                if (card.image_path) {
+                    $('#cardImagePreview').attr('src', card.image_path).show();
+                } else {
+                    $('#cardImage').val('');
+                    $('#cardImagePreview').hide();
+                }
+
                 $('#cardModal').modal('show');
             });
         }
