@@ -179,39 +179,32 @@
         }
 
         function saveCard() {
-            const card = {
-                id: currentCardId,
-                title: $('#cardName').val(),
-                description: $('#cardDescription').val(),
-                rarity: $('#cardRarity').val(),
-                type: $('#cardType').val(),
-                text_ready: $('#cardTextReady').prop('checked'),
-                image_ready: $('#cardImageReady').prop('checked')
-            };
-
-            if (currentCardId === null) {
-                $.post({
-                    url: '/cards',
-                    data: JSON.stringify(card),
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    success: function() {
-                        $('#cardModal').modal('hide');
-                        fetchCards();
-                    }
-                });
-            } else {
-                $.ajax({
-                    url: `/cards/${currentCardId}`,
-                    type: 'PUT',
-                    data: JSON.stringify(card),
-                    contentType: 'application/json',
-                    success: function() {
-                        $('#cardModal').modal('hide');
-                        fetchCards();
-                    }
-                });
+            const formData = new FormData();
+            formData.append('title', $('#cardName').val());
+            formData.append('description', $('#cardDescription').val());
+            formData.append('rarity', $('#cardRarity').val());
+            formData.append('type', $('#cardType').val());
+            formData.append('text_ready', $('#cardTextReady').prop('checked'));
+            formData.append('image_ready', $('#cardImageReady').prop('checked'));
+            const imageFile = $('#cardImage')[0].files[0];
+            if (imageFile) {
+                formData.append('cardImage', imageFile);
             }
+
+            const url = currentCardId === null ? '/cards' : `/cards/${currentCardId}`;
+            const method = currentCardId === null ? 'POST' : 'PUT';
+
+            $.ajax({
+                url: url,
+                type: method,
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function() {
+                    $('#cardModal').modal('hide');
+                    fetchCards();
+                }
+            });
         }
 
         function showDeleteConfirmationModal(id) {
