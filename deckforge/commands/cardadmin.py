@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 DATA_FILE = '/home/jsanford/gitDev/deckforge/data/card_metadata.json'
-UPLOAD_FOLDER = '/home/jsanford/gitDev/deckforge/static/uploads'
+UPLOAD_FOLDER = '/home/jsanford/gitDev/deckforge/data/images'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def read_data():
@@ -36,7 +36,7 @@ def add_card():
         filename = secure_filename(image_file.filename)
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         image_file.save(image_path)
-        new_card['image_path'] = f'/static/uploads/{filename}'
+        new_card['image_path'] = f'/data/images/{filename}'
 
     data = read_data()
     new_card_id = max([card['id'] for card in data], default=0) + 1
@@ -61,7 +61,7 @@ def update_card(card_id):
         filename = secure_filename(image_file.filename)
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         image_file.save(image_path)
-        updated_card['image_path'] = f'/static/uploads/{filename}'
+        updated_card['image_path'] = f'/data/images/{filename}'
 
     data = read_data()
     for card in data:
