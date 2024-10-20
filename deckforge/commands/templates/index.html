@@ -40,7 +40,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="cardForm">
+                    <form id="cardForm" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="cardId">ID</label>
                             <input type="text" class="form-control" id="cardId" readonly>
@@ -78,6 +78,10 @@
                         <div class="form-group">
                             <label for="cardImageReady">Image Ready</label>
                             <input type="checkbox" class="form-control" id="cardImageReady">
+                        </div>
+                        <div class="form-group">
+                            <label for="cardImage">Image</label>
+                            <input type="file" class="form-control" id="cardImage" name="cardImage">
                         </div>
                     </form>
                 </div>
