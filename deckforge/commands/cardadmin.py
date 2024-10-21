@@ -31,16 +31,19 @@ def get_cards():
 @app.route('/cards', methods=['POST'])
 def add_card():
     new_card = request.form.to_dict()
-    image_file = request.files.get('cardImage')
-    if image_file:
-        filename = secure_filename(image_file.filename)
-        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        image_file.save(image_path)
-        new_card['image_path'] = f'/data/images/{filename}'
-
     data = read_data()
     new_card_id = max([card['id'] for card in data], default=0) + 1
     new_card['id'] = new_card_id
+
+    image_file = request.files.get('cardImage')
+    if image_file:
+        card_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(new_card_id))
+        os.makedirs(card_folder, exist_ok=True)
+        filename = secure_filename(image_file.filename)
+        image_path = os.path.join(card_folder, filename)
+        image_file.save(image_path)
+        new_card['image_path'] = f'/data/images/{new_card_id}/{filename}'
+
     data.append(new_card)
     write_data(data)
     return jsonify(new_card), 201
@@ -56,16 +59,17 @@ def get_card(card_id):
 @app.route('/cards/<int:card_id>', methods=['PUT'])
 def update_card(card_id):
     updated_card = request.form.to_dict()
-    image_file = request.files.get('cardImage')
-    if image_file:
-        filename = secure_filename(image_file.filename)
-        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        image_file.save(image_path)
-        updated_card['image_path'] = f'/data/images/{filename}'
-
     data = read_data()
     for card in data:
         if card['id'] == card_id:
+            image_file = request.files.get('cardImage')
+            if image_file:
+                card_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(card_id))
+                os.makedirs(card_folder, exist_ok=True)
+                filename = secure_filename(image_file.filename)
+                image_path = os.path.join(card_folder, filename)
+                image_file.save(image_path)
+                updated_card['image_path'] = f'/data/images/{card_id}/{filename}'
             card.update(updated_card)
             write_data(data)
             return jsonify(card)
