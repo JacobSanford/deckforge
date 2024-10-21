@@ -103,6 +103,9 @@
                             </div>
                         </div>
                     </form>
+                    <div id="referenceImagesPreview" class="mt-3">
+                        <!-- Reference images will be added dynamically here -->
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -188,6 +191,7 @@
             if (editorInstance) {
                 editorInstance.setData('');
             }
+            $('#referenceImagesPreview').empty();
         }
 
         function showEditCardModal(id) {
@@ -210,6 +214,13 @@
                 } else {
                     $('#cardImage').val('');
                     $('#cardImagePreview').hide();
+                }
+
+                $('#referenceImagesPreview').empty();
+                if (card.reference_images) {
+                    card.reference_images.forEach(image => {
+                        $('#referenceImagesPreview').append(`<img src="${image}" alt="Reference Image" style="width: 100px; margin: 5px;">`);
+                    });
                 }
 
                 $('#cardModal').modal('show');
