@@ -86,6 +86,11 @@ def delete_card(card_id):
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+# New route to serve images from /data/images
+@app.route('/data/images/<filename>')
+def serve_image(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 def start_admin_server():
     app.run(debug=True)
 
