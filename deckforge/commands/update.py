@@ -32,6 +32,7 @@ def get_latest_card_metadata():
             'text_ready': False,
             'image_ready': False,
             'base_art': '',
+            "reference_images": [],
             'notes': ''
         })
     
