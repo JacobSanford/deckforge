@@ -8,6 +8,11 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
+    <style>
+        .modal-lg-custom {
+            max-width: 1200px; /* Double the default width */
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -32,7 +37,7 @@
 
     <!-- Add/Edit Card Modal -->
     <div class="modal" tabindex="-1" role="dialog" id="cardModal">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg-custom" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalTitle">Add Card</h5>
@@ -74,20 +79,18 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="cardTextReady">Text Ready</label>
-                            <input type="checkbox" class="form-control" id="cardTextReady">
-                        </div>
-                        <div class="form-group">
-                            <label for="cardImageReady">Image Ready</label>
-                            <input type="checkbox" class="form-control" id="cardImageReady">
-                        </div>
-                        <div class="form-group">
                             <label for="cardImage">Image</label>
                             <input type="file" class="form-control" id="cardImage" name="cardImage">
                         </div>
                         <div class="form-group">
                             <label for="cardNotes">Notes</label>
                             <textarea class="form-control" id="cardNotes"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardTextReady">Text Ready</label>
+                            <input type="checkbox" class="form-control" id="cardTextReady">
+                            <label for="cardImageReady">Image Ready</label>
+                            <input type="checkbox" class="form-control" id="cardImageReady">
                         </div>
                     </form>
                 </div>
