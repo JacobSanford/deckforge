@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
 </head>
 <body>
     <div class="container">
@@ -122,6 +123,7 @@
     <script>
         let currentCardId = null;
         let cardIdToDelete = null;
+        let editorInstance = null;
 
         function fetchCards() {
             $.get('/cards', function(cards) {
@@ -166,6 +168,9 @@
             $('#cardRarity').val('common');
             $('#cardType').val('person');
             $('#cardModal').modal('show');
+            if (editorInstance) {
+                editorInstance.setData('');
+            }
         }
 
         function showEditCardModal(id) {
@@ -179,7 +184,9 @@
                 $('#cardType').val(card.type);
                 $('#cardTextReady').prop('checked', card.text_ready);
                 $('#cardImageReady').prop('checked', card.image_ready);
-                $('#cardNotes').val(card.notes);
+                if (editorInstance) {
+                    editorInstance.setData(card.notes);
+                }
 
                 if (card.base_art) {
                     $('#cardImagePreview').attr('src', card.base_art).show();
@@ -200,7 +207,9 @@
             formData.append('type', $('#cardType').val());
             formData.append('text_ready', $('#cardTextReady').prop('checked'));
             formData.append('image_ready', $('#cardImageReady').prop('checked'));
-            formData.append('notes', $('#cardNotes').val());
+            if (editorInstance) {
+                formData.append('notes', editorInstance.getData());
+            }
             const imageFile = $('#cardImage')[0].files[0];
             if (imageFile) {
                 formData.append('cardImage', imageFile);
@@ -241,6 +250,14 @@
         $(document).ready(function() {
             fetchCards();
             $('#confirmDeleteButton').click(deleteCard);
+            ClassicEditor
+                .create(document.querySelector('#cardNotes'))
+                .then(editor => {
+                    editorInstance = editor;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         });
     </script>
 </body>
