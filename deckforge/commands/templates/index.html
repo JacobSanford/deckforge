@@ -232,6 +232,11 @@
                 formData.append('cardImage', imageFile);
             }
 
+            var referenceImages = $('#cardReferenceImages')[0].files;
+            for (var i = 0; i < referenceImages.length; i++) {
+                formData.append('cardReferenceImages', referenceImages[i]);
+            }
+
             const url = currentCardId === null ? '/cards' : `/cards/${currentCardId}`;
             const method = currentCardId === null ? 'POST' : 'PUT';
 

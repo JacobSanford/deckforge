@@ -79,10 +79,11 @@ def update_card(card_id):
             updated_card['image_ready'] = request.form.get('image_ready') == 'true'
 
             # Handle base art image
+            card_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(card_id))
+            os.makedirs(card_folder, exist_ok=True)
+
             image_file = request.files.get('cardImage')
             if image_file:
-                card_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(card_id))
-                os.makedirs(card_folder, exist_ok=True)
                 filename = secure_filename(image_file.filename)
                 image_path = os.path.join(card_folder, filename)
                 image_file.save(image_path)
