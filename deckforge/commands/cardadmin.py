@@ -37,6 +37,7 @@ def add_card():
     new_card['text_ready'] = request.form.get('text_ready') == 'true'
     new_card['image_ready'] = request.form.get('image_ready') == 'true'
 
+    # Handle base art image
     image_file = request.files.get('cardImage')
     if image_file:
         card_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(new_card_id))
@@ -45,6 +46,16 @@ def add_card():
         image_path = os.path.join(card_folder, filename)
         image_file.save(image_path)
         new_card['base_art'] = f'/data/images/{new_card_id}/{filename}'
+
+    # Handle reference images
+    reference_images = request.files.getlist('cardReferenceImages')
+    reference_image_paths = []
+    for ref_image in reference_images:
+        ref_filename = secure_filename(ref_image.filename)
+        ref_image_path = os.path.join(card_folder, ref_filename)
+        ref_image.save(ref_image_path)
+        reference_image_paths.append(f'/data/images/{new_card_id}/{ref_filename}')
+    new_card['reference_images'] = reference_image_paths
 
     data.append(new_card)
     write_data(data)
@@ -67,6 +78,7 @@ def update_card(card_id):
             updated_card['text_ready'] = request.form.get('text_ready') == 'true'
             updated_card['image_ready'] = request.form.get('image_ready') == 'true'
 
+            # Handle base art image
             image_file = request.files.get('cardImage')
             if image_file:
                 card_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(card_id))
@@ -75,6 +87,17 @@ def update_card(card_id):
                 image_path = os.path.join(card_folder, filename)
                 image_file.save(image_path)
                 updated_card['base_art'] = f'/data/images/{card_id}/{filename}'
+
+            # Handle reference images
+            reference_images = request.files.getlist('cardReferenceImages')
+            reference_image_paths = []
+            for ref_image in reference_images:
+                ref_filename = secure_filename(ref_image.filename)
+                ref_image_path = os.path.join(card_folder, ref_filename)
+                ref_image.save(ref_image_path)
+                reference_image_paths.append(f'/data/images/{card_id}/{ref_filename}')
+            updated_card['reference_images'] = reference_image_paths
+
             card.update(updated_card)
             write_data(data)
             return jsonify(card)
