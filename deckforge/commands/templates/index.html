@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Card Administration</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
@@ -25,6 +26,7 @@
                     <th>Description</th>
                     <th>Rarity</th>
                     <th>Type</th>
+                    <th>Done</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -156,6 +158,10 @@
                             <td>${card.description}</td>
                             <td><span class="${rarityClass}">${card.rarity}</span></td>
                             <td>${card.type}</td>
+                            <td>
+                                ${card.image_ready ? '<i class="fas fa-check"></i>' : ''}
+                                ${card.text_ready ? '<i class="fas fa-check"></i>' : ''}
+                            </td>
                             <td>
                                 <button class="btn btn-warning btn-sm" onclick="showEditCardModal(${card.id})">Edit</button>
                                 <button class="btn btn-danger btn-sm" onclick="showDeleteConfirmationModal(${card.id})">Delete</button>

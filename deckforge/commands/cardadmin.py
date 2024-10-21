@@ -34,6 +34,8 @@ def add_card():
     data = read_data()
     new_card_id = max([card['id'] for card in data], default=0) + 1
     new_card['id'] = new_card_id
+    new_card['text_ready'] = request.form.get('text_ready') == 'true'
+    new_card['image_ready'] = request.form.get('image_ready') == 'true'
 
     image_file = request.files.get('cardImage')
     if image_file:
@@ -62,6 +64,9 @@ def update_card(card_id):
     data = read_data()
     for card in data:
         if card['id'] == card_id:
+            updated_card['text_ready'] = request.form.get('text_ready') == 'true'
+            updated_card['image_ready'] = request.form.get('image_ready') == 'true'
+
             image_file = request.files.get('cardImage')
             if image_file:
                 card_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(card_id))
