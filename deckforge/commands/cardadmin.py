@@ -42,7 +42,7 @@ def add_card():
         filename = secure_filename(image_file.filename)
         image_path = os.path.join(card_folder, filename)
         image_file.save(image_path)
-        new_card['image_path'] = f'/data/images/{new_card_id}/{filename}'
+        new_card['base_art'] = f'/data/images/{new_card_id}/{filename}'
 
     data.append(new_card)
     write_data(data)
@@ -69,7 +69,7 @@ def update_card(card_id):
                 filename = secure_filename(image_file.filename)
                 image_path = os.path.join(card_folder, filename)
                 image_file.save(image_path)
-                updated_card['image_path'] = f'/data/images/{card_id}/{filename}'
+                updated_card['base_art'] = f'/data/images/{card_id}/{filename}'
             card.update(updated_card)
             write_data(data)
             return jsonify(card)
@@ -91,9 +91,10 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # New route to serve images from /data/images
-@app.route('/data/images/<filename>')
-def serve_image(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+@app.route('/data/images/<card_id>/<filename>')
+def serve_image(card_id, filename):
+    serve_path = os.path.join(app.config['UPLOAD_FOLDER'], card_id)
+    return send_from_directory(serve_path, filename)
 
 def start_admin_server():
     app.run(debug=True)

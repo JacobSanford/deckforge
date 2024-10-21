@@ -176,8 +176,8 @@
                 $('#cardTextReady').prop('checked', card.text_ready);
                 $('#cardImageReady').prop('checked', card.image_ready);
 
-                if (card.image_path) {
-                    $('#cardImagePreview').attr('src', card.image_path).show();
+                if (card.base_art) {
+                    $('#cardImagePreview').attr('src', card.base_art).show();
                 } else {
                     $('#cardImage').val('');
                     $('#cardImagePreview').hide();
