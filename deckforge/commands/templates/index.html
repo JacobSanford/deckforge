@@ -219,7 +219,7 @@
                 $('#referenceImagesPreview').empty();
                 if (card.reference_images) {
                     card.reference_images.forEach(image => {
-                        $('#referenceImagesPreview').append(`<img src="${image}" alt="Reference Image" style="width: 100px; margin: 5px;">`);
+                        $('#referenceImagesPreview').append(`<a href="${image}" target="_blank"><img src="${image}" alt="Reference Image" style="width: 100px; margin: 5px;"></a>`);
                     });
                 }
 
