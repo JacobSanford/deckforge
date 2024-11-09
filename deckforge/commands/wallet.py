@@ -1,4 +1,4 @@
-import deckforge.blockchain.crypto
+from deckforge.wallet.wallet import create_wallet
 
 def generate_wallet():
     """
@@ -7,9 +7,7 @@ def generate_wallet():
     Returns:
         dict: The wallet.
     """
-    private_key, public_key = deckforge.blockchain.crypto.generate_keypair()
-    return {
-        'private_key': private_key,
-        'public_key': public_key,
-        'address': deckforge.blockchain.crypto.pubkey_to_pubaddress(public_key)
-    }
+    wallet = create_wallet()
+    print(f"Private key: {wallet.private_key}")
+    print(f"Public key: {wallet.public_key}")
+    print(f"Public address: {wallet.address}")

@@ -8,7 +8,6 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from ecdsa import SigningKey, VerifyingKey, SECP256k1
 from ecdsa.util import sigdecode_der
 
-@staticmethod
 def valid_secp256k1_pubkey(public_key: str | bytes) -> bool:
     """
     Validate a secp256k1 public key.
@@ -27,7 +26,6 @@ def valid_secp256k1_pubkey(public_key: str | bytes) -> bool:
     except Exception as e:
         return False
 
-@staticmethod
 def pubkey_to_pubaddress(public_key: str) -> str:
     """
     Convert a public key to a public address.
@@ -44,7 +42,6 @@ def pubkey_to_pubaddress(public_key: str) -> str:
     ec = web3.Web3.keccak(binascii.unhexlify(public_key))
     return web3.Web3.to_checksum_address(f"0x{ec.hex()[-40:]}")
 
-@staticmethod
 def extract_pubkey_from_sig(signature: str) -> str:
     """
     Extract the public key from a signature.
@@ -73,7 +70,6 @@ def validate_signature(signature: str, public_key: str, message:str) -> bool:
     vk = VerifyingKey.from_string(binascii.unhexlify(public_key), curve=SECP256k1)
     return vk.verify(binascii.unhexlify(signature), message.encode())
 
-@staticmethod
 def extract_message_from_signature(signature: str) -> str:
     """
     Extract the message from a signature.
