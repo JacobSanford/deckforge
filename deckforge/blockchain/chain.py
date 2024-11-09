@@ -3,7 +3,6 @@ import os
 import hashlib
 import time
 
-from binascii import unhexlify
 from deckforge.blockchain.contracts import SmartContract
 
 class Blockchain:

@@ -2,7 +2,7 @@ import threading
 
 from flask import Flask, jsonify
 
-from deckforge.blockchain.core import Blockchain
+from deckforge.blockchain.chain import Blockchain
 
 app = Flask(__name__)
 blockchain = Blockchain()
