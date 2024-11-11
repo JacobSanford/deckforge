@@ -2,6 +2,7 @@ import gspread
 import json
 
 from gspread.utils import GridRangeType
+from deckforge.core.path import get_data_file_path
 
 def get_latest_card_metadata():
     """
@@ -13,28 +14,32 @@ def get_latest_card_metadata():
     sheet_name = 'Happy Times Trading Cards'
     gc = gspread.service_account(filename=creds_file)
 
-    wks = gc.open(sheet_name).sheet1
-    cell_values = wks.get(return_type=GridRangeType.ListOfLists, maintain_size=True)
-    cell_values.pop(0)
-
     card_metadata = []
-    for row in cell_values:
-        for i in range(len(row)):
-            if row[i] == '-':
-                row[i] = None
+    card_id = 0
+    for sheet in gc.open(sheet_name).worksheets():
+        cell_values = sheet.get(return_type=GridRangeType.ListOfLists, maintain_size=True)
+        cell_values.pop(0) # Remove the header row
+        
+        for row in cell_values:
+            card_id += 1
+            for i in range(len(row)):
+                if row[i] == '-':
+                    row[i] = None
 
-        card_metadata.append({
-            'id': int(row[0] or 0),
-            'title': row[1],
-            'type': row[2],
-            'description': row[3],
-            'rarity': row[4],
-            'text_ready': False,
-            'image_ready': False,
-            'base_art': '',
-            "reference_images": [],
-            'notes': ''
-        })
-    
-    # Output this in pretty json format
-    print (json.dumps(card_metadata, indent=4))
+            card_metadata.append({
+                'id': row[1],
+                'section_sort': row[2],
+                'card_num': card_id,
+                'title': row[3],
+                'type': row[4],
+                'description': row[5],
+                'rarity': row[6],
+                'text_ready': False,
+                'image_ready': False,
+                'base_art': '',
+                "reference_images": [],
+                'notes': ''
+            })
+
+    with open(get_data_file_path('card_metadata.json'), 'w') as f:
+        f.write(json.dumps(card_metadata, indent=4))

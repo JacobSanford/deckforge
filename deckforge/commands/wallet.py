@@ -1,4 +1,4 @@
-from deckforge.wallet.wallet import create_wallet
+from deckforge.wallet.core import create_wallet
 
 def generate_wallet():
     """
