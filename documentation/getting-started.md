@@ -25,8 +25,8 @@ https://github.com/pyenv/pyenv#installation
 ### Set a global version
 
 ```
-pyenv install 3.10
-pyenv global 3.10
+pyenv install 3.12
+pyenv global 3.12
 ```
 
 ## poetry
