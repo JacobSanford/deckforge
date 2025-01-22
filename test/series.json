@@ -1,0 +1,1456 @@
+{
+    "id": "LEGACYDECK-1",
+    "name": "Legacy Deck 1",
+    "description": "A series of cards imparting a legacy.",
+    "config": {
+        "distribution": {
+            "rarity": {
+                "1": {
+                    "name": "Common",
+                    "items": 124
+                },
+                "2": {
+                    "name": "Uncommon",
+                    "items": 50
+                },
+                "3": {
+                    "name": "Rare",
+                    "items": 18
+                },
+                "4": {
+                    "name": "Legendary",
+                    "items": 9
+                }
+            },
+            "mint": {
+                "total": 242,
+                "special": {
+                    "1": {
+                        "name": "borderless",
+                        "items": 58,
+                        "numbered_sets": 0
+                    },
+                    "2": {
+                        "name": "foil",
+                        "items": 23,
+                        "numbered_sets": 0
+                    },
+                    "3": {
+                        "name": "holographic",
+                        "items": 7,
+                        "numbered_sets": 1
+                    }
+                }
+            }
+        },
+        "cards": [
+            {
+                "number": 1,
+                "title": "Common Place 1",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 2,
+                "title": "Common Place 2",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 3,
+                "title": "Common Place 3",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 4,
+                "title": "Common Place 4",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 5,
+                "title": "Common Place 5",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 6,
+                "title": "Common Place 6",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 7,
+                "title": "Common Place 7",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 8,
+                "title": "Common Place 8",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 9,
+                "title": "Common Place 9",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 10,
+                "title": "Common Place 10",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 11,
+                "title": "Common Place 11",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 12,
+                "title": "Common Place 12",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 13,
+                "title": "Common Place 13",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 14,
+                "title": "Common Place 14",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 15,
+                "title": "Common Place 15",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 16,
+                "title": "Common Place 16",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 17,
+                "title": "Common Place 17",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 18,
+                "title": "Common Place 18",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 19,
+                "title": "Common Place 19",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 20,
+                "title": "Common Place 20",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 21,
+                "title": "Common Place 21",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 22,
+                "title": "Common Place 22",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 23,
+                "title": "Common Place 23",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 24,
+                "title": "Common Place 24",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 25,
+                "title": "Common Place 25",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 26,
+                "title": "Common Place 26",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 27,
+                "title": "Common Place 27",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 28,
+                "title": "Common Place 28",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 29,
+                "title": "Common Place 29",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 30,
+                "title": "Common Place 30",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 31,
+                "title": "Common Place 31",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 32,
+                "title": "Common Place 32",
+                "description": "Place Description.",
+                "rarity": 1,
+                "type": "places"
+            },
+            {
+                "number": 33,
+                "title": "Uncommon Place 1",
+                "description": "Place Description.",
+                "rarity": 2,
+                "type": "places"
+            },
+            {
+                "number": 34,
+                "title": "Uncommon Place 2",
+                "description": "Place Description.",
+                "rarity": 2,
+                "type": "places"
+            },
+            {
+                "number": 35,
+                "title": "Uncommon Place 3",
+                "description": "Place Description.",
+                "rarity": 2,
+                "type": "places"
+            },
+            {
+                "number": 36,
+                "title": "Uncommon Place 4",
+                "description": "Place Description.",
+                "rarity": 2,
+                "type": "places"
+            },
+            {
+                "number": 37,
+                "title": "Uncommon Place 5",
+                "description": "Place Description.",
+                "rarity": 2,
+                "type": "places"
+            },
+            {
+                "number": 38,
+                "title": "Uncommon Place 6",
+                "description": "Place Description.",
+                "rarity": 2,
+                "type": "places"
+            },
+            {
+                "number": 39,
+                "title": "Uncommon Place 7",
+                "description": "Place Description.",
+                "rarity": 2,
+                "type": "places"
+            },
+            {
+                "number": 40,
+                "title": "Uncommon Place 8",
+                "description": "Place Description.",
+                "rarity": 2,
+                "type": "places"
+            },
+            {
+                "number": 41,
+                "title": "Uncommon Place 9",
+                "description": "Place Description.",
+                "rarity": 2,
+                "type": "places"
+            },
+            {
+                "number": 42,
+                "title": "Rare Place 1",
+                "description": "Place Description.",
+                "rarity": 3,
+                "type": "places"
+            },
+            {
+                "number": 43,
+                "title": "Rare Place 2",
+                "description": "Place Description.",
+                "rarity": 3,
+                "type": "places"
+            },
+            {
+                "number": 44,
+                "title": "Rare Place 3",
+                "description": "Place Description.",
+                "rarity": 3,
+                "type": "places"
+            },
+            {
+                "number": 45,
+                "title": "Rare Place 4",
+                "description": "Place Description.",
+                "rarity": 3,
+                "type": "places"
+            },
+            {
+                "number": 46,
+                "title": "Legendary Place 1",
+                "description": "Place Description.",
+                "rarity": 4,
+                "type": "places"
+            },
+            {
+                "number": 47,
+                "title": "Legendary Place 2",
+                "description": "Place Description.",
+                "rarity": 4,
+                "type": "places"
+            },
+            {
+                "number": 48,
+                "title": "Common Event 1",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 49,
+                "title": "Common Event 2",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 50,
+                "title": "Common Event 3",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 51,
+                "title": "Common Event 4",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 52,
+                "title": "Common Event 5",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 53,
+                "title": "Common Event 6",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 54,
+                "title": "Common Event 7",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 55,
+                "title": "Common Event 8",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 56,
+                "title": "Common Event 9",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 57,
+                "title": "Common Event 10",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 58,
+                "title": "Common Event 11",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 59,
+                "title": "Common Event 12",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 60,
+                "title": "Common Event 13",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 61,
+                "title": "Common Event 14",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 62,
+                "title": "Common Event 15",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 63,
+                "title": "Common Event 16",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 64,
+                "title": "Common Event 17",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 65,
+                "title": "Common Event 18",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 66,
+                "title": "Common Event 19",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 67,
+                "title": "Common Event 20",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 68,
+                "title": "Common Event 21",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 69,
+                "title": "Common Event 22",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 70,
+                "title": "Common Event 23",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 71,
+                "title": "Common Event 24",
+                "description": "Event Description.",
+                "rarity": 1,
+                "type": "events"
+            },
+            {
+                "number": 72,
+                "title": "Uncommon Event 1",
+                "description": "Event Description.",
+                "rarity": 2,
+                "type": "events"
+            },
+            {
+                "number": 73,
+                "title": "Uncommon Event 2",
+                "description": "Event Description.",
+                "rarity": 2,
+                "type": "events"
+            },
+            {
+                "number": 74,
+                "title": "Uncommon Event 3",
+                "description": "Event Description.",
+                "rarity": 2,
+                "type": "events"
+            },
+            {
+                "number": 75,
+                "title": "Uncommon Event 4",
+                "description": "Event Description.",
+                "rarity": 2,
+                "type": "events"
+            },
+            {
+                "number": 76,
+                "title": "Uncommon Event 5",
+                "description": "Event Description.",
+                "rarity": 2,
+                "type": "events"
+            },
+            {
+                "number": 77,
+                "title": "Uncommon Event 6",
+                "description": "Event Description.",
+                "rarity": 2,
+                "type": "events"
+            },
+            {
+                "number": 78,
+                "title": "Rare Event 1",
+                "description": "Event Description.",
+                "rarity": 3,
+                "type": "events"
+            },
+            {
+                "number": 79,
+                "title": "Rare Event 2",
+                "description": "Event Description.",
+                "rarity": 3,
+                "type": "events"
+            },
+            {
+                "number": 80,
+                "title": "Rare Event 3",
+                "description": "Event Description.",
+                "rarity": 3,
+                "type": "events"
+            },
+            {
+                "number": 81,
+                "title": "Legendary Event 1",
+                "description": "Event Description.",
+                "rarity": 4,
+                "type": "events"
+            },
+            {
+                "number": 82,
+                "title": "Legendary Event 2",
+                "description": "Event Description.",
+                "rarity": 4,
+                "type": "events"
+            },
+            {
+                "number": 83,
+                "title": "Common Culture 1",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 84,
+                "title": "Common Culture 2",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 85,
+                "title": "Common Culture 3",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 86,
+                "title": "Common Culture 4",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 87,
+                "title": "Common Culture 5",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 88,
+                "title": "Common Culture 6",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 89,
+                "title": "Common Culture 7",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 90,
+                "title": "Common Culture 8",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 91,
+                "title": "Common Culture 9",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 92,
+                "title": "Common Culture 10",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 93,
+                "title": "Common Culture 11",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 94,
+                "title": "Common Culture 12",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 95,
+                "title": "Common Culture 13",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 96,
+                "title": "Common Culture 14",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 97,
+                "title": "Common Culture 15",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 98,
+                "title": "Common Culture 16",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 99,
+                "title": "Common Culture 17",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 100,
+                "title": "Common Culture 18",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 101,
+                "title": "Common Culture 19",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 102,
+                "title": "Common Culture 20",
+                "description": "Culture Description.",
+                "rarity": 1,
+                "type": "cultures"
+            },
+            {
+                "number": 103,
+                "title": "Uncommon Culture 1",
+                "description": "Culture Description.",
+                "rarity": 2,
+                "type": "cultures"
+            },
+            {
+                "number": 104,
+                "title": "Uncommon Culture 2",
+                "description": "Culture Description.",
+                "rarity": 2,
+                "type": "cultures"
+            },
+            {
+                "number": 105,
+                "title": "Uncommon Culture 3",
+                "description": "Culture Description.",
+                "rarity": 2,
+                "type": "cultures"
+            },
+            {
+                "number": 106,
+                "title": "Uncommon Culture 4",
+                "description": "Culture Description.",
+                "rarity": 2,
+                "type": "cultures"
+            },
+            {
+                "number": 107,
+                "title": "Uncommon Culture 5",
+                "description": "Culture Description.",
+                "rarity": 2,
+                "type": "cultures"
+            },
+            {
+                "number": 108,
+                "title": "Uncommon Culture 6",
+                "description": "Culture Description.",
+                "rarity": 2,
+                "type": "cultures"
+            },
+            {
+                "number": 109,
+                "title": "Rare Culture 1",
+                "description": "Culture Description.",
+                "rarity": 3,
+                "type": "cultures"
+            },
+            {
+                "number": 110,
+                "title": "Rare Culture 2",
+                "description": "Culture Description.",
+                "rarity": 3,
+                "type": "cultures"
+            },
+            {
+                "number": 111,
+                "title": "Rare Culture 3",
+                "description": "Culture Description.",
+                "rarity": 3,
+                "type": "cultures"
+            },
+            {
+                "number": 112,
+                "title": "Legendary Culture 1",
+                "description": "Culture Description.",
+                "rarity": 4,
+                "type": "cultures"
+            },
+            {
+                "number": 113,
+                "title": "Legendary Culture 2",
+                "description": "Culture Description.",
+                "rarity": 4,
+                "type": "cultures"
+            },
+            {
+                "number": 114,
+                "title": "Uncommon Person 1",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 115,
+                "title": "Uncommon Person 2",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 116,
+                "title": "Uncommon Person 3",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 117,
+                "title": "Uncommon Person 4",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 118,
+                "title": "Uncommon Person 5",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 119,
+                "title": "Uncommon Person 6",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 120,
+                "title": "Uncommon Person 7",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 121,
+                "title": "Uncommon Person 8",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 122,
+                "title": "Uncommon Person 9",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 123,
+                "title": "Uncommon Person 10",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 124,
+                "title": "Uncommon Person 11",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 125,
+                "title": "Uncommon Person 12",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 126,
+                "title": "Uncommon Person 13",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 127,
+                "title": "Uncommon Person 14",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 128,
+                "title": "Uncommon Person 15",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 129,
+                "title": "Uncommon Person 16",
+                "description": "Person Description.",
+                "rarity": 2,
+                "type": "people"
+            },
+            {
+                "number": 130,
+                "title": "Common Thing 1",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 131,
+                "title": "Common Thing 2",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 132,
+                "title": "Common Thing 3",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 133,
+                "title": "Common Thing 4",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 134,
+                "title": "Common Thing 5",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 135,
+                "title": "Common Thing 6",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 136,
+                "title": "Common Thing 7",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 137,
+                "title": "Common Thing 8",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 138,
+                "title": "Common Thing 9",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 139,
+                "title": "Common Thing 10",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 140,
+                "title": "Common Thing 11",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 141,
+                "title": "Common Thing 12",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 142,
+                "title": "Common Thing 13",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 143,
+                "title": "Common Thing 14",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 144,
+                "title": "Common Thing 15",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 145,
+                "title": "Common Thing 16",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 146,
+                "title": "Common Thing 17",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 147,
+                "title": "Common Thing 18",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 148,
+                "title": "Common Thing 19",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 149,
+                "title": "Common Thing 20",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 150,
+                "title": "Common Thing 21",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 151,
+                "title": "Common Thing 22",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 152,
+                "title": "Common Thing 23",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 153,
+                "title": "Common Thing 24",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 154,
+                "title": "Common Thing 25",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 155,
+                "title": "Common Thing 26",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 156,
+                "title": "Common Thing 27",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 157,
+                "title": "Common Thing 28",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 158,
+                "title": "Common Thing 29",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 159,
+                "title": "Common Thing 30",
+                "description": "Thing Description.",
+                "rarity": 1,
+                "type": "things"
+            },
+            {
+                "number": 160,
+                "title": "Uncommon Thing 1",
+                "description": "Thing Description.",
+                "rarity": 2,
+                "type": "things"
+            },
+            {
+                "number": 161,
+                "title": "Uncommon Thing 2",
+                "description": "Thing Description.",
+                "rarity": 2,
+                "type": "things"
+            },
+            {
+                "number": 162,
+                "title": "Uncommon Thing 3",
+                "description": "Thing Description.",
+                "rarity": 2,
+                "type": "things"
+            },
+            {
+                "number": 163,
+                "title": "Uncommon Thing 4",
+                "description": "Thing Description.",
+                "rarity": 2,
+                "type": "things"
+            },
+            {
+                "number": 164,
+                "title": "Uncommon Thing 5",
+                "description": "Thing Description.",
+                "rarity": 2,
+                "type": "things"
+            },
+            {
+                "number": 165,
+                "title": "Uncommon Thing 6",
+                "description": "Thing Description.",
+                "rarity": 2,
+                "type": "things"
+            },
+            {
+                "number": 166,
+                "title": "Uncommon Thing 7",
+                "description": "Thing Description.",
+                "rarity": 2,
+                "type": "things"
+            },
+            {
+                "number": 167,
+                "title": "Uncommon Thing 8",
+                "description": "Thing Description.",
+                "rarity": 2,
+                "type": "things"
+            },
+            {
+                "number": 168,
+                "title": "Rare Thing 1",
+                "description": "Thing Description.",
+                "rarity": 3,
+                "type": "things"
+            },
+            {
+                "number": 169,
+                "title": "Rare Thing 2",
+                "description": "Thing Description.",
+                "rarity": 3,
+                "type": "things"
+            },
+            {
+                "number": 170,
+                "title": "Rare Thing 3",
+                "description": "Thing Description.",
+                "rarity": 3,
+                "type": "things"
+            },
+            {
+                "number": 171,
+                "title": "Rare Thing 4",
+                "description": "Thing Description.",
+                "rarity": 3,
+                "type": "things"
+            },
+            {
+                "number": 172,
+                "title": "Legendary Thing 1",
+                "description": "Thing Description.",
+                "rarity": 4,
+                "type": "things"
+            },
+            {
+                "number": 173,
+                "title": "Legendary Thing 2",
+                "description": "Thing Description.",
+                "rarity": 4,
+                "type": "things"
+            },
+            {
+                "number": 174,
+                "title": "Common Dream 1",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 175,
+                "title": "Common Dream 2",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 176,
+                "title": "Common Dream 3",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 177,
+                "title": "Common Dream 4",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 178,
+                "title": "Common Dream 5",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 179,
+                "title": "Common Dream 6",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 180,
+                "title": "Common Dream 7",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 181,
+                "title": "Common Dream 8",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 182,
+                "title": "Common Dream 9",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 183,
+                "title": "Common Dream 10",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 184,
+                "title": "Common Dream 11",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 185,
+                "title": "Common Dream 12",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 186,
+                "title": "Common Dream 13",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 187,
+                "title": "Common Dream 14",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 188,
+                "title": "Common Dream 15",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 189,
+                "title": "Common Dream 16",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 190,
+                "title": "Common Dream 17",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 191,
+                "title": "Common Dream 18",
+                "description": "Dream Description.",
+                "rarity": 1,
+                "type": "dreams"
+            },
+            {
+                "number": 192,
+                "title": "Uncommon Dream 1",
+                "description": "Dream Description.",
+                "rarity": 2,
+                "type": "dreams"
+            },
+            {
+                "number": 193,
+                "title": "Uncommon Dream 2",
+                "description": "Dream Description.",
+                "rarity": 2,
+                "type": "dreams"
+            },
+            {
+                "number": 194,
+                "title": "Uncommon Dream 3",
+                "description": "Dream Description.",
+                "rarity": 2,
+                "type": "dreams"
+            },
+            {
+                "number": 195,
+                "title": "Uncommon Dream 4",
+                "description": "Dream Description.",
+                "rarity": 2,
+                "type": "dreams"
+            },
+            {
+                "number": 196,
+                "title": "Uncommon Dream 5",
+                "description": "Dream Description.",
+                "rarity": 2,
+                "type": "dreams"
+            },
+            {
+                "number": 197,
+                "title": "Rare Dream 1",
+                "description": "Dream Description.",
+                "rarity": 3,
+                "type": "dreams"
+            },
+            {
+                "number": 198,
+                "title": "Rare Dream 2",
+                "description": "Dream Description.",
+                "rarity": 3,
+                "type": "dreams"
+            },
+            {
+                "number": 199,
+                "title": "Rare Dream 3",
+                "description": "Dream Description.",
+                "rarity": 3,
+                "type": "dreams"
+            },
+            {
+                "number": 200,
+                "title": "Rare Dream 4",
+                "description": "Dream Description.",
+                "rarity": 3,
+                "type": "dreams"
+            },
+            {
+                "number": 201,
+                "title": "Legendary Dream 1",
+                "description": "Dream Description.",
+                "rarity": 4,
+                "type": "dreams"
+            }
+        ]
+    }
+}
