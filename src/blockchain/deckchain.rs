@@ -10,13 +10,13 @@ use crate::blockchain::transaction::{BlockTransaction, TransactionType};
 use crate::blockchain::block::Block;
 use crate::blockchain::chain::BlockChain;
 
-use crate::card::seriesrelease::TradingCardSeriesRelease;
+use crate::card::seriesreleasestate::TradingCardSeriesReleaseState;
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct DeckChain {
     pub data_dir: String,
     pub blockchain: BlockChain,
-    pub series_states: Vec<TradingCardSeriesRelease>,
+    pub series_states: Vec<TradingCardSeriesReleaseState>,
 }
 
 impl DeckChain {
@@ -36,7 +36,7 @@ impl DeckChain {
 
         for release in releases {
             let series_id = release.get("id").unwrap().as_str().unwrap();
-            let series_state = TradingCardSeriesRelease::from_deckchain(deckchain.clone(), series_id.to_string()).await;
+            let series_state = TradingCardSeriesReleaseState::from_deckchain(deckchain.clone(), series_id.to_string()).await;
             deckchain.series_states.push(series_state);
         }
 

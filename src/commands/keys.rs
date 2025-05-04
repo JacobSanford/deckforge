@@ -1,5 +1,5 @@
 use crate::auth;
-use dialoguer::{Input, MultiSelect, Confirm};
+use dialoguer::{Input, Confirm};
 use std::sync::Arc;
 use chrono::{Duration, Utc};
 

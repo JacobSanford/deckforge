@@ -10,11 +10,10 @@ mod logging;
 use clap::Parser;
 use env_logger;
 
-use crate::commands::commands::Commands;
-use crate::config::Config;
 use crate::api::server;
+use crate::commands::commands::Commands;
 
-use blockchain::deckchain::{self, DeckChain};
+use blockchain::deckchain::DeckChain;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -41,7 +40,7 @@ async fn main() {
             server::start_server(config_path).await.expect("Failed to start server");
         }
 
-        // Insert ReleaseSet transaction.
+        // Release a series into the blockchain.
         Commands::InsertReleaseSet { series_file } => {
             let config_path = "config.toml";
             let mut deckchain = DeckChain::new(config_path).await.unwrap();

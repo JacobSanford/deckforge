@@ -1,3 +1,3 @@
 pub mod card;
 pub mod series;
-pub mod seriesrelease;
+pub mod seriesreleasestate;
