@@ -112,7 +112,12 @@ impl TradingCardSeries {
         let mint_ea = self.get_mint_each().await;
 
         let mut mint_list = Vec::new();
-        for (_key, special) in self.config.distribution.mint.special.iter() {
+
+        // Sort the specials by key to ensure consistent order
+        let mut sorted_specials: Vec<_> = self.config.distribution.mint.special.iter().collect();
+        sorted_specials.sort_by(|a, b| a.0.cmp(b.0));
+
+        for (_key, special) in sorted_specials {
             for _i in 0..special.items {
                 mint_list.push(vec![special.name.clone()]);
             }
