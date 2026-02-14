@@ -28,14 +28,16 @@ impl AuthorizedKeys {
         self.keys.push(key);
     }
 
-    pub fn save_to_file(&self, file_path: &str) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn save_to_file(&self, file_path: &str) -> anyhow::Result<()> {
         let json = serde_json::to_string_pretty(&self)?;
-        fs::create_dir_all(Path::new(file_path).parent().unwrap())?;
+        if let Some(parent) = Path::new(file_path).parent() {
+            fs::create_dir_all(parent)?;
+        }
         fs::write(file_path, json)?;
         Ok(())
     }
 
-    pub fn load_from_file(file_path: &str) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn load_from_file(file_path: &str) -> anyhow::Result<Self> {
         let data = fs::read_to_string(file_path)?;
         let keys: AuthorizedKeys = serde_json::from_str(&data)?;
         Ok(keys)

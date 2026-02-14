@@ -1,6 +1,7 @@
 use sha3::{Digest, Keccak256};
 
 use crate::crypto::keypair::KeyPair;
+use crate::error::Result;
 
 #[derive(Clone)]
 pub struct Wallet {
@@ -10,9 +11,6 @@ pub struct Wallet {
 }
 
 impl Wallet {
-    const ADDRESS_LENGTH: usize = 40;
-    const ADDRESS_PREFIX: &'static str = "0x";
-
     pub fn new() -> Wallet {
         let key_pair = KeyPair::new();
         let pub_key = key_pair.public_key_as_string();
@@ -25,44 +23,37 @@ impl Wallet {
         }
     }
 
-    pub fn from_keys(pub_key: String, secret_key: String) -> Wallet {
-        let address = Wallet::pub_key_to_wallet_address(&pub_key);
+    pub fn from_keys(pub_key: &str, secret_key: &str) -> Wallet {
+        let address = Wallet::pub_key_to_wallet_address(pub_key);
         Wallet {
-            pub_key,
-            secret_key,
+            pub_key: pub_key.to_string(),
+            secret_key: secret_key.to_string(),
             address,
         }
     }
 
-    pub fn from_pem(pem: &str) -> Wallet {
-        let (pub_key, secret_key, address) = Wallet::decode_pem(pem);
-        Wallet {
-            pub_key,
-            secret_key,
-            address,
-        }
-    }
-
-    fn pub_key_to_wallet_address(pub_key: &str) -> String {
-        let hash = Keccak256::digest(hex::decode(pub_key).unwrap());
-        format!(
-            "{}{}",
-            Wallet::ADDRESS_PREFIX, hex::encode(&hash[12..])
-        )
-    }
-
-    pub fn to_pem(&self) -> String {
-        KeyPair::from_keys(self.pub_key.clone(), self.secret_key.clone()).as_pem()
-    }
-
-    fn decode_pem(pem: &str) -> (String, String, String) {
-        let key_pair = KeyPair::from_pem(pem);
+    pub fn from_pem(pem: &str) -> Result<Wallet> {
+        let key_pair = KeyPair::from_pem(pem)?;
         let pub_key = key_pair.public_key_as_string();
         let secret_key = key_pair.secret_key_as_string();
         let address = Wallet::pub_key_to_wallet_address(&pub_key);
-        (pub_key, secret_key, address)
+        Ok(Wallet {
+            pub_key,
+            secret_key,
+            address,
+        })
     }
 
+    fn pub_key_to_wallet_address(pub_key: &str) -> String {
+        let decoded = hex::decode(pub_key).unwrap_or_default();
+        let hash = Keccak256::digest(&decoded);
+        format!("0x{}", hex::encode(&hash[12..]))
+    }
+
+    pub fn to_pem(&self) -> Result<String> {
+        let kp = KeyPair::from_keys(&self.pub_key, &self.secret_key)?;
+        Ok(kp.as_pem())
+    }
 }
 
 #[cfg(test)]
@@ -88,7 +79,7 @@ mod tests {
     #[test]
     fn test_wallet_from_pem() {
         let pem_string: &str = "-----BEGIN PUBLIC KEY-----\r\nA+dasHoDUYAcfMcksBUBs65Dw4PNgWzbKMZjhtxnD6mN\r\n-----END PUBLIC KEY-----\r\n\r\n-----BEGIN PRIVATE KEY-----\r\nAlJ3s4doSZ97Cb45mD9sY0IcQHVIVomi1aSGCu+gTtY=\r\n-----END PRIVATE KEY-----\r\n";
-        let wallet = Wallet::from_pem(pem_string);
+        let wallet = Wallet::from_pem(pem_string).unwrap();
         assert_eq!(wallet.address, "0x8ba82d54332db0c58edc1120a15409aa8cd5f7d9");
         assert_eq!(wallet.pub_key, "03e75ab07a0351801c7cc724b01501b3ae43c383cd816cdb28c66386dc670fa98d");
         assert_eq!(wallet.secret_key, "025277b38768499f7b09be39983f6c63421c4075485689a2d5a4860aefa04ed6");
@@ -97,12 +88,11 @@ mod tests {
     #[test]
     fn test_wallet_to_pem() {
         let wallet = Wallet::from_keys(
-            "03e75ab07a0351801c7cc724b01501b3ae43c383cd816cdb28c66386dc670fa98d".to_string(),
-            "025277b38768499f7b09be39983f6c63421c4075485689a2d5a4860aefa04ed6".to_string(),
+            "03e75ab07a0351801c7cc724b01501b3ae43c383cd816cdb28c66386dc670fa98d",
+            "025277b38768499f7b09be39983f6c63421c4075485689a2d5a4860aefa04ed6",
         );
-        let derived_pem = wallet.to_pem();
+        let derived_pem = wallet.to_pem().unwrap();
         let pem_string: &str = "-----BEGIN PUBLIC KEY-----\r\nA+dasHoDUYAcfMcksBUBs65Dw4PNgWzbKMZjhtxnD6mN\r\n-----END PUBLIC KEY-----\r\n\r\n-----BEGIN PRIVATE KEY-----\r\nAlJ3s4doSZ97Cb45mD9sY0IcQHVIVomi1aSGCu+gTtY=\r\n-----END PRIVATE KEY-----\r\n";
         assert_eq!(derived_pem, pem_string);
     }
-
 }

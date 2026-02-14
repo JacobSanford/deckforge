@@ -1,11 +1,10 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha3::{Digest, Sha3_256};
 
-use crate::blockchain::chain::BlockChain;
-use crate::blockchain::transaction::{BlockTransaction, TransactionType};
+use crate::blockchain::transaction::BlockTransaction;
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Block {
@@ -17,8 +16,7 @@ pub struct Block {
 }
 
 impl Block {
-    pub fn new(chain: BlockChain, transactions: Vec<BlockTransaction>) -> Self {
-        let previous_block = chain.blocks.last().unwrap();
+    pub fn new(previous_block: &Block, transactions: Vec<BlockTransaction>) -> Self {
         let index = previous_block.index + 1;
         let previous_hash = previous_block.hash();
 
@@ -35,7 +33,7 @@ impl Block {
 
     pub fn new_genesis(init_data: Value) -> Self {
         let transactions = vec![BlockTransaction::new(
-            TransactionType::Init { data: init_data }
+            super::transaction::TransactionType::Init { data: init_data },
         )];
         let mut block = Block {
             index: 0,
@@ -50,12 +48,10 @@ impl Block {
 
     pub fn hash(&self) -> String {
         let mut hasher = Sha3_256::new();
+        let tx_json = serde_json::to_string(&self.transactions).unwrap_or_default();
         let data = format!(
-            "{}{}{}{:?}",
-            self.index,
-            self.previous_hash,
-            self.timestamp,
-            self.transactions
+            "{}{}{}{}",
+            self.index, self.previous_hash, self.timestamp, tx_json
         );
         hasher.update(data.as_bytes());
         hex::encode(hasher.finalize())
@@ -64,7 +60,7 @@ impl Block {
     fn cur_microtime() -> u128 {
         SystemTime::now()
             .duration_since(UNIX_EPOCH)
-            .expect("Time went backwards")
+            .expect("system clock before UNIX epoch")
             .as_micros()
     }
 }

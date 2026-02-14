@@ -1,126 +1,52 @@
-use std::convert::Infallible;
-use std::sync::{Mutex, Arc};
+use std::sync::Arc;
 
-use hyper::{Request, Response, Server};
-use hyper::service::{make_service_fn, service_fn};
-use hyper::Body;
-use lazy_static::lazy_static;
-use matchit::Router;
-use serde_json::Value;
+use axum::extract::State;
+use axum::http::StatusCode;
+use axum::response::IntoResponse;
+use axum::routing::get;
+use axum::Router;
 
 use crate::blockchain::chain::BlockChain;
-use crate::logging::server::{log_info, log_error};
 use crate::config::Config;
 
-lazy_static! {
-    static ref BLOCKCHAIN_MUTEX: Arc<Mutex<()>> = Arc::new(Mutex::new(()));
+struct AppState {
+    config: Config,
 }
 
-async fn handle_request(req: Request<Body>, config: Arc<Config>) -> Result<Response<Body>, Infallible> {
-    let mut router = Router::new();
-    router.insert("/blockchain", "blockchain").unwrap();
-
-    let matched = router.at(req.uri().path());
-    let data_dir = config.data_dir.clone();
-
-    match matched {
-        Ok(matched) => {
-            match *matched.value {
-                "blockchain" => {
-                    if !allow_get_only(&req) {
-                        return Ok(method_not_allowed());
-                    }
-
-                    match blockchain(data_dir) {
-                        Ok(blockchain) => {
-                            let blockchain_json = serde_json::to_string(&blockchain).unwrap();
-                            log_info("Blockchain request".to_string());
-                            Ok(Response::new(Body::from(blockchain_json)))
-                        },
-                        Err(_) => {
-                            log_error("Failed to get blockchain".to_string());
-                            Ok(internal_server_error())
-                        },
-                    }
-                },
-                _ => {
-                    log_error(format!("Routing matched, but default handler for path fired: {}", req.uri().path()));
-                    Ok(not_found())
-                },
+async fn get_blockchain(State(state): State<Arc<AppState>>) -> impl IntoResponse {
+    let storage_path = format!("{}/blockchain.json", state.config.data_dir);
+    match BlockChain::new(&storage_path, serde_json::Value::Null) {
+        Ok(blockchain) => {
+            match serde_json::to_string(&blockchain) {
+                Ok(json) => {
+                    tracing::info!("Blockchain request");
+                    (StatusCode::OK, json).into_response()
+                }
+                Err(e) => {
+                    tracing::error!("Failed to serialize blockchain: {}", e);
+                    StatusCode::INTERNAL_SERVER_ERROR.into_response()
+                }
             }
-        },
-        Err(_) => {
-            log_error(format!("No handler for path: {}", req.uri().path()));
-            Ok(not_found())
-        },
-    }
-}
-
-fn allow_get_only(req: &Request<Body>) -> bool {
-    if req.method() == hyper::Method::GET {
-        true
-    } else {
-        log_error(format!("{} method not allowed for {}", req.method(), req.uri().path()));
-        false
-    }
-}
-
-fn blockchain(data_dir: String) -> Result<BlockChain, ()> {
-    let storage_path = format!("{}/blockchain.json", data_dir);
-    let blockchain = BlockChain::new(&storage_path, Value::Null);
-    match blockchain {
-        Ok(blockchain) => Ok(blockchain),
-        Err(_) => {
-            log_error("Failed to initialize blockchain".to_string());
-            Err(())
-        },
-    }
-}
-
-fn blockchain_lock(data_dir: String) -> Result<BlockChain, ()> {
-    let _lock = BLOCKCHAIN_MUTEX.lock().unwrap();
-    blockchain(data_dir)
-}
-
-fn not_found() -> Response<Body> {
-    Response::builder()
-        .status(404)
-        .body(Body::from("Not Found"))
-        .unwrap()
-}
-
-fn internal_server_error() -> Response<Body> {
-    Response::builder()
-        .status(500)
-        .body(Body::from("Internal Server Error"))
-        .unwrap()
-}
-
-fn method_not_allowed() -> Response<Body> {
-    Response::builder()
-        .status(405)
-        .body(Body::from("Method Not Allowed"))
-        .unwrap()
-}
-
-pub async fn start_server(config_path: String) -> Result<(), Box<dyn std::error::Error>> {
-    let config = Arc::new(Config::load(config_path.as_str())?);
-
-    let make_svc = make_service_fn(move |_| {
-        let config = config.clone();
-        async move {
-            Ok::<_, Infallible>(service_fn(move |req| {
-                handle_request(req, config.clone())
-            }))
         }
-    });
+        Err(e) => {
+            tracing::error!("Failed to get blockchain: {}", e);
+            StatusCode::INTERNAL_SERVER_ERROR.into_response()
+        }
+    }
+}
 
-    let addr = ([127, 0, 0, 1], 3000).into();
-    let server = Server::bind(&addr).serve(make_svc);
+pub async fn start_server(config_path: String) -> anyhow::Result<()> {
+    let config = Config::load(config_path.as_str())?;
 
-    println!("Listening on http://{}", addr);
+    let state = Arc::new(AppState { config });
 
-    server.await?;
+    let app = Router::new()
+        .route("/blockchain", get(get_blockchain))
+        .with_state(state);
+
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:3000").await?;
+    println!("Listening on http://{}", listener.local_addr()?);
+    axum::serve(listener, app).await?;
 
     Ok(())
 }
@@ -129,9 +55,7 @@ pub async fn start_server(config_path: String) -> Result<(), Box<dyn std::error:
 pub mod tests {
     use super::*;
 
-    use hyper::{Client, StatusCode, Method};
-    use hyper::body::to_bytes;
-    use tempdir::TempDir;
+    use tempfile::TempDir;
     use tokio::task;
 
     #[tokio::test]
@@ -152,87 +76,72 @@ pub mod tests {
     #[tokio::test]
     async fn test_get_blockchain_method_not_allowed() {
         spawn_test_server().await;
-        let (_body, status) = send_test_request("/blockchain", Method::POST, Body::empty(), vec![]).await;
-        assert_eq!(status, 405);
+        let client = reqwest::Client::new();
+        let resp = client
+            .post("http://127.0.0.1:3000/blockchain")
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(resp.status(), 405);
     }
 
-    pub async fn sleep_for_server_up() {
-        tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
-    }
-
-    pub async fn wait_for_server_up() {
-        let uri = format!("http://127.0.0.1:3000{}", "/blockchain");
-        let client = Client::new();
+    async fn wait_for_server_up() {
+        let client = reqwest::Client::new();
         loop {
-            let resp = client.get(uri.parse().unwrap()).await;
-            if resp.is_ok() {
+            if client
+                .get("http://127.0.0.1:3000/blockchain")
+                .send()
+                .await
+                .is_ok()
+            {
                 break;
             }
-            tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
+            tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
         }
     }
 
-    pub async fn send_test_get_request(endpoint: &str) -> (String, StatusCode) {
-        let (body_string, status) = send_test_request(endpoint, Method::GET, Body::empty(), vec![]).await;
-        (body_string, status)
+    async fn send_test_get_request(endpoint: &str) -> (String, u16) {
+        let client = reqwest::Client::new();
+        let resp = client
+            .get(format!("http://127.0.0.1:3000{}", endpoint))
+            .send()
+            .await
+            .unwrap();
+        let status = resp.status().as_u16();
+        let body = resp.text().await.unwrap();
+        (body, status)
     }
 
-    pub async fn send_test_request(endpoint: &str, method: Method, body: Body, headers: Vec<(&str, &str)>) -> (String, StatusCode) {
-        let uri = format!("http://127.0.0.1:3000{}", endpoint);
-        let mut req_builder = Request::builder()
-            .method(method)
-            .uri(uri)
-            .header("content-type", "application/json");
-
-        for (key, value) in headers {
-            req_builder = req_builder.header(key, value);
-        }
-
-        let req = req_builder.body(body);
-        let client = Client::new();
-        let resp = client.request(req.unwrap()).await.unwrap();
-        let status = resp.status();
-        let body_bytes = to_bytes(resp.into_body()).await.unwrap();
-        let body_string = String::from_utf8(body_bytes.to_vec()).unwrap();
-        (body_string, status)
-    }
-
-    pub async fn spawn_test_server() -> String {
-        let test_data_dir: String = init_test_data_dir().await;
-        let test_data_clone = test_data_dir.clone();
-        task::spawn(async {
-            start_server(test_data_dir).await.unwrap();
+    async fn spawn_test_server() -> String {
+        let test_config_path = init_test_data_dir();
+        let config_path_clone = test_config_path.clone();
+        task::spawn(async move {
+            start_server(config_path_clone).await.unwrap();
         });
         wait_for_server_up().await;
-        test_data_clone
+        test_config_path
     }
 
-    async fn init_test_data_dir() -> String {
-        let tmp_config_dir = TempDir::new("deckforgetmp").unwrap();
-        let tmp_path = tmp_config_dir.into_path();
-        let tmp_config_dir_path = tmp_path.to_str().unwrap().to_string();
-    
-        // Make a data directory in the temp dir
-        let data_dir_path = format!("{}/data", tmp_config_dir_path);
+    fn init_test_data_dir() -> String {
+        let tmp_dir = TempDir::new().unwrap();
+        let tmp_path = tmp_dir.into_path();
+        let tmp_dir_path = tmp_path.to_str().unwrap().to_string();
+
+        let data_dir_path = format!("{}/data", tmp_dir_path);
         std::fs::create_dir(&data_dir_path).unwrap();
 
-        // Update the line containing data_dir in the config file
         let config_path = "config.toml";
-        let tmp_config_file_path = format!("{}/config.toml", tmp_config_dir_path);
+        let tmp_config_file_path = format!("{}/config.toml", tmp_dir_path);
 
-        // Read the config file as toml.
         let config_file = std::fs::read_to_string(config_path).unwrap();
-        let config_file_toml = toml::from_str::<Value>(&config_file).unwrap();
+        let config_toml: serde_json::Value = toml::from_str(&config_file).unwrap();
 
-        // Update the data_dir field in the config file.
-        let mut updated_config_file = config_file_toml.clone();
-        updated_config_file["data_dir"] = Value::String(data_dir_path.clone());
+        let mut updated = config_toml;
+        updated["data_dir"] = serde_json::Value::String(data_dir_path);
 
-        // Write the updated config file to the temp directory.
-        let updated_config_file_toml = toml::to_string(&updated_config_file).unwrap();
-        std::fs::write(&tmp_config_file_path, updated_config_file_toml).unwrap();
+        let updated_toml = toml::to_string(&updated).unwrap();
+        std::fs::write(&tmp_config_file_path, updated_toml).unwrap();
 
         tmp_config_file_path
     }
-
 }

@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
@@ -15,8 +15,6 @@ pub struct BlockTransaction {
 
 impl BlockTransaction {
     pub fn new(transaction_type: TransactionType) -> Self {
-        BlockTransaction {
-            transaction_type,
-        }
+        BlockTransaction { transaction_type }
     }
 }

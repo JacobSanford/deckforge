@@ -1,19 +1,17 @@
 mod api;
 mod auth;
-mod card;
-mod config;
 mod blockchain;
+mod card;
 mod commands;
+mod config;
 mod crypto;
-mod logging;
+mod error;
 
 use clap::Parser;
-use env_logger;
 
 use crate::api::server;
 use crate::commands::commands::Commands;
-
-use blockchain::deckchain::DeckChain;
+use crate::blockchain::deckchain::DeckChain;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -23,30 +21,29 @@ struct Cli {
 }
 
 #[tokio::main]
-async fn main() {
-    env_logger::init();
+async fn main() -> anyhow::Result<()> {
+    tracing_subscriber::fmt::init();
+
     let cli = Cli::parse();
     let config_path = "config.toml".to_string();
-    
+
     match cli.command {
-        // Key Generation.
         Commands::GenerateKey { label, expiry } => {
-            commands::keys::generate_key(label, expiry).await;
+            commands::keys::generate_key(label, expiry)?;
         }
 
-        // Start the server.
         Commands::StartServer => {
             println!("Starting server...");
-            server::start_server(config_path).await.expect("Failed to start server");
+            server::start_server(config_path).await?;
         }
 
-        // Release a series into the blockchain.
         Commands::InsertReleaseSet { series_file } => {
-            let config_path = "config.toml";
-            let mut deckchain = DeckChain::new(config_path).await.unwrap();
-            if let Err(e) = deckchain.do_release_series(series_file).await {
+            let mut deckchain = DeckChain::new(&config_path)?;
+            if let Err(e) = deckchain.do_release_series(series_file) {
                 eprintln!("Error: {}", e);
             }
         }
     }
+
+    Ok(())
 }
