@@ -53,14 +53,17 @@ impl DeckChain {
         self.blockchain.save(&full_path)
     }
 
+    #[allow(dead_code)] // public API
     pub fn get_blocks(&self) -> &[Block] {
         self.blockchain.get_blocks()
     }
 
+    #[allow(dead_code)] // public API
     pub fn add_block(&mut self, transactions: Vec<BlockTransaction>) -> Result<()> {
         self.blockchain.add_block(transactions)
     }
 
+    #[allow(dead_code)] // public API
     pub fn init_data(&self) -> Result<Value> {
         self.blockchain.get_init_data()
     }

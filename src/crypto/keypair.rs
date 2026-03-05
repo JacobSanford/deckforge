@@ -9,6 +9,7 @@ pub struct KeyPair {
     pub secret_key: SecretKey,
 }
 
+#[allow(dead_code)]
 impl KeyPair {
     pub fn validate(&self) -> bool {
         self.validate_pub_priv_match()

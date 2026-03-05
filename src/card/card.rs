@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::card::series::CardConfig;
 
+#[allow(dead_code)] // core domain type
 #[derive(Clone, Serialize, Deserialize, PartialEq, Debug)]
 pub struct TradingCard {
     series: String,
@@ -14,6 +15,7 @@ pub struct TradingCard {
     pub properties: Vec<String>,
 }
 
+#[allow(dead_code)]
 impl TradingCard {
     pub fn from_card_config(
         card_config: &CardConfig,

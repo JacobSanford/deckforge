@@ -3,6 +3,7 @@ use sha3::{Digest, Keccak256};
 use crate::crypto::keypair::KeyPair;
 use crate::error::Result;
 
+#[allow(dead_code)] // core domain type
 #[derive(Clone)]
 pub struct Wallet {
     pub pub_key: String,
@@ -10,6 +11,7 @@ pub struct Wallet {
     pub address: String,
 }
 
+#[allow(dead_code)]
 impl Wallet {
     pub fn new() -> Wallet {
         let key_pair = KeyPair::new();

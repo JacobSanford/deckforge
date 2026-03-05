@@ -56,6 +56,7 @@ pub struct CardConfig {
     pub card_type: String,
 }
 
+#[allow(dead_code)]
 impl TradingCardSeries {
     pub const MAXIMUM_RARITY_VALUE: u32 = u32::MAX;
     pub const ERROR_NO_ID: &'static str = "Series JSON does not contain an 'id' field";

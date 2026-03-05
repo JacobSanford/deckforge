@@ -16,6 +16,7 @@ pub struct TradingCardSeriesReleaseState {
     pub shuffle_hash: String,
 }
 
+#[allow(dead_code)]
 impl TradingCardSeriesReleaseState {
     pub fn from_deckchain(deckchain: &DeckChain, series_id: String) -> Result<Self> {
         let series = TradingCardSeries::from_deckchain(deckchain, series_id.clone())?;

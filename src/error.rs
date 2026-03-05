@@ -39,6 +39,7 @@ pub enum DeckForgeError {
     Validation { reason: String },
 
     #[error("Invalid public key length: expected 33 bytes, got {len}")]
+    #[allow(dead_code)] // used by crypto module which is test-exercised
     InvalidPublicKeyLength { len: usize },
 
     #[error("Dialoguer error: {0}")]

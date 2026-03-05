@@ -14,6 +14,7 @@ pub struct BlockChain {
 }
 
 impl BlockChain {
+    #[allow(dead_code)] // blockchain constant for transaction addresses
     pub const NULL_ADDRESS: &'static str = "0x0000000000000000000000000000000000000000";
 
     pub fn new(storage_path: &str, init_data: Value) -> Result<Self> {
@@ -108,6 +109,7 @@ impl BlockChain {
         Ok(())
     }
 
+    #[allow(dead_code)] // public API
     pub fn get_init_data(&self) -> Result<Value> {
         let genesis = self.blocks.first().ok_or(DeckForgeError::EmptyChain)?;
         let init_tx = genesis
@@ -120,10 +122,12 @@ impl BlockChain {
         }
     }
 
+    #[allow(dead_code)] // public API
     pub fn get_block(&self, index: u64) -> Option<&Block> {
         self.blocks.get(index as usize)
     }
 
+    #[allow(dead_code)] // public API
     pub fn get_blocks(&self) -> &[Block] {
         &self.blocks
     }
@@ -135,6 +139,7 @@ impl BlockChain {
         Ok(())
     }
 
+    #[allow(dead_code)] // public API
     pub fn get_blocks_by_transaction_type(&self, transaction_type: TransactionType) -> Vec<&Block> {
         self.blocks
             .iter()

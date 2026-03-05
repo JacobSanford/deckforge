@@ -16,7 +16,6 @@ use crate::config::Config;
 
 pub struct AppState {
     pub deckchain: RwLock<DeckChain>,
-    pub config: Config,
     pub authorized_keys: AuthorizedKeys,
 }
 
@@ -93,7 +92,6 @@ pub async fn start_server(config: Config) -> crate::error::Result<()> {
 
     let state = Arc::new(AppState {
         deckchain: RwLock::new(deckchain),
-        config,
         authorized_keys,
     });
 
@@ -136,7 +134,6 @@ pub mod tests {
 
         let state = Arc::new(AppState {
             deckchain: RwLock::new(deckchain),
-            config,
             authorized_keys,
         });
 
