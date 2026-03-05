@@ -1,47 +1,89 @@
 use std::sync::Arc;
 
-use axum::extract::State;
+use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::routing::get;
-use axum::Router;
+use axum::{Json, Router};
+use serde::Serialize;
+use tokio::sync::RwLock;
 
-use crate::blockchain::chain::BlockChain;
+use crate::blockchain::deckchain::DeckChain;
 use crate::config::Config;
 
-struct AppState {
-    config: Config,
+pub struct AppState {
+    pub deckchain: RwLock<DeckChain>,
+    pub config: Config,
+}
+
+#[derive(Serialize)]
+struct ApiErrorResponse {
+    error: String,
+}
+
+fn json_error(status: StatusCode, message: &str) -> impl IntoResponse {
+    (
+        status,
+        Json(ApiErrorResponse {
+            error: message.to_string(),
+        }),
+    )
+}
+
+async fn health() -> impl IntoResponse {
+    StatusCode::OK
 }
 
 async fn get_blockchain(State(state): State<Arc<AppState>>) -> impl IntoResponse {
-    let storage_path = format!("{}/blockchain.json", state.config.data_dir);
-    match BlockChain::new(&storage_path, serde_json::Value::Null) {
-        Ok(blockchain) => {
-            match serde_json::to_string(&blockchain) {
-                Ok(json) => {
-                    tracing::info!("Blockchain request");
-                    (StatusCode::OK, json).into_response()
-                }
-                Err(e) => {
-                    tracing::error!("Failed to serialize blockchain: {}", e);
-                    StatusCode::INTERNAL_SERVER_ERROR.into_response()
-                }
-            }
+    let deckchain = state.deckchain.read().await;
+    match serde_json::to_string(&deckchain.blockchain) {
+        Ok(json) => {
+            tracing::info!("Blockchain request");
+            (StatusCode::OK, json).into_response()
         }
         Err(e) => {
-            tracing::error!("Failed to get blockchain: {}", e);
-            StatusCode::INTERNAL_SERVER_ERROR.into_response()
+            tracing::error!("Failed to serialize blockchain: {}", e);
+            json_error(StatusCode::INTERNAL_SERVER_ERROR, "Failed to serialize blockchain").into_response()
         }
     }
 }
 
+async fn get_series_list(State(state): State<Arc<AppState>>) -> impl IntoResponse {
+    let deckchain = state.deckchain.read().await;
+    let releases = deckchain.card_series_releases();
+    Json(releases).into_response()
+}
+
+async fn get_series_by_id(
+    State(state): State<Arc<AppState>>,
+    Path(id): Path<String>,
+) -> impl IntoResponse {
+    let deckchain = state.deckchain.read().await;
+    match deckchain.card_series_release(&id) {
+        Ok(release) => Json(release).into_response(),
+        Err(_) => json_error(StatusCode::NOT_FOUND, &format!("Series '{}' not found", id)).into_response(),
+    }
+}
+
+pub fn build_app(state: Arc<AppState>) -> Router {
+    Router::new()
+        .route("/health", get(health))
+        .route("/blockchain", get(get_blockchain))
+        .route("/series", get(get_series_list))
+        .route("/series/{id}", get(get_series_by_id))
+        .with_state(state)
+}
+
 pub async fn start_server(config: Config) -> crate::error::Result<()> {
     let listen_addr = config.listen_addr().to_string();
-    let state = Arc::new(AppState { config });
+    let deckchain = DeckChain::new(&config)?;
 
-    let app = Router::new()
-        .route("/blockchain", get(get_blockchain))
-        .with_state(state);
+    let state = Arc::new(AppState {
+        deckchain: RwLock::new(deckchain),
+        config,
+    });
+
+    let app = build_app(state);
 
     let listener = tokio::net::TcpListener::bind(&listen_addr).await?;
     tracing::info!("Listening on http://{}", listener.local_addr()?);
@@ -57,7 +99,7 @@ pub mod tests {
     use tempfile::TempDir;
     use tokio::task;
 
-    fn init_test_config() -> (Config, TempDir) {
+    fn init_test_state() -> (Arc<AppState>, TempDir) {
         let tmp_dir = TempDir::new().unwrap();
         let data_dir_path = format!("{}/data", tmp_dir.path().to_str().unwrap());
         std::fs::create_dir(&data_dir_path).unwrap();
@@ -68,7 +110,66 @@ pub mod tests {
             authorized_keys_path: None,
         };
 
-        (config, tmp_dir)
+        let deckchain = DeckChain::new(&config).unwrap();
+        let state = Arc::new(AppState {
+            deckchain: RwLock::new(deckchain),
+            config,
+        });
+
+        (state, tmp_dir)
+    }
+
+    async fn spawn_test_server() -> String {
+        let (state, _tmp_dir) = init_test_state();
+        let app = build_app(state);
+
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let local_addr = listener.local_addr().unwrap();
+        let base_url = format!("http://{}", local_addr);
+
+        task::spawn(async move {
+            axum::serve(listener, app).await.unwrap();
+        });
+
+        // Keep _tmp_dir alive
+        std::mem::forget(_tmp_dir);
+
+        wait_for_server_up(&base_url).await;
+        base_url
+    }
+
+    async fn wait_for_server_up(base_url: &str) {
+        let client = reqwest::Client::new();
+        loop {
+            if client
+                .get(format!("{}/health", base_url))
+                .send()
+                .await
+                .is_ok()
+            {
+                break;
+            }
+            tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
+        }
+    }
+
+    async fn send_test_get_request(base_url: &str, endpoint: &str) -> (String, u16) {
+        let client = reqwest::Client::new();
+        let resp = client
+            .get(format!("{}{}", base_url, endpoint))
+            .send()
+            .await
+            .unwrap();
+        let status = resp.status().as_u16();
+        let body = resp.text().await.unwrap();
+        (body, status)
+    }
+
+    #[tokio::test]
+    async fn test_health() {
+        let base_url = spawn_test_server().await;
+        let (_body, status) = send_test_get_request(&base_url, "/health").await;
+        assert_eq!(status, 200);
     }
 
     #[tokio::test]
@@ -98,54 +199,19 @@ pub mod tests {
         assert_eq!(resp.status(), 405);
     }
 
-    async fn wait_for_server_up(base_url: &str) {
-        let client = reqwest::Client::new();
-        loop {
-            if client
-                .get(format!("{}/blockchain", base_url))
-                .send()
-                .await
-                .is_ok()
-            {
-                break;
-            }
-            tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
-        }
+    #[tokio::test]
+    async fn test_get_series_list() {
+        let base_url = spawn_test_server().await;
+        let (body, status) = send_test_get_request(&base_url, "/series").await;
+        assert_eq!(status, 200);
+        assert_eq!(body, "[]");
     }
 
-    async fn send_test_get_request(base_url: &str, endpoint: &str) -> (String, u16) {
-        let client = reqwest::Client::new();
-        let resp = client
-            .get(format!("{}{}", base_url, endpoint))
-            .send()
-            .await
-            .unwrap();
-        let status = resp.status().as_u16();
-        let body = resp.text().await.unwrap();
-        (body, status)
-    }
-
-    async fn spawn_test_server() -> String {
-        let (config, _tmp_dir) = init_test_config();
-        let listen_addr = config.listen_addr().to_string();
-        let state = Arc::new(AppState { config });
-
-        let app = Router::new()
-            .route("/blockchain", get(get_blockchain))
-            .with_state(state);
-
-        let listener = tokio::net::TcpListener::bind(&listen_addr).await.unwrap();
-        let local_addr = listener.local_addr().unwrap();
-        let base_url = format!("http://{}", local_addr);
-
-        task::spawn(async move {
-            axum::serve(listener, app).await.unwrap();
-        });
-
-        // Keep _tmp_dir alive by leaking it (test-only)
-        std::mem::forget(_tmp_dir);
-
-        wait_for_server_up(&base_url).await;
-        base_url
+    #[tokio::test]
+    async fn test_get_series_not_found() {
+        let base_url = spawn_test_server().await;
+        let (body, status) = send_test_get_request(&base_url, "/series/nonexistent").await;
+        assert_eq!(status, 404);
+        assert!(body.contains("not found"));
     }
 }
