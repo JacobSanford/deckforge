@@ -12,10 +12,14 @@ use clap::Parser;
 use crate::api::server;
 use crate::commands::commands::Commands;
 use crate::blockchain::deckchain::DeckChain;
+use crate::config::Config;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
+    #[arg(short, long, default_value = "config.toml")]
+    config: String,
+
     #[command(subcommand)]
     command: Commands,
 }
@@ -25,22 +29,22 @@ async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
 
     let cli = Cli::parse();
-    let config_path = "config.toml".to_string();
+    let config = Config::load(&cli.config)?;
 
     match cli.command {
         Commands::GenerateKey { label, expiry } => {
-            commands::keys::generate_key(label, expiry)?;
+            commands::keys::generate_key(label, expiry, &config)?;
         }
 
         Commands::StartServer => {
-            println!("Starting server...");
-            server::start_server(config_path).await?;
+            tracing::info!("Starting server...");
+            server::start_server(config).await?;
         }
 
         Commands::InsertReleaseSet { series_file } => {
-            let mut deckchain = DeckChain::new(&config_path)?;
+            let mut deckchain = DeckChain::new(&config)?;
             if let Err(e) = deckchain.do_release_series(series_file) {
-                eprintln!("Error: {}", e);
+                tracing::error!("Error: {}", e);
             }
         }
     }

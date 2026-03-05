@@ -15,7 +15,3 @@ pub enum Commands {
         series_file: String,
     },
 }
-
-impl Commands {
-
-}

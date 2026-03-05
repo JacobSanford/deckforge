@@ -21,8 +21,7 @@ pub struct DeckChain {
 impl DeckChain {
     const BLOCKCHAIN_FILENAME: &'static str = "blockchain.json";
 
-    pub fn new(config_path: &str) -> Result<Self> {
-        let config = Config::load(config_path)?;
+    pub fn new(config: &Config) -> Result<Self> {
         let blockchain_data_dir = &config.data_dir;
         let blockchain = DeckChain::get_init_blockchain(blockchain_data_dir)?;
         let mut deckchain = DeckChain {
@@ -116,7 +115,7 @@ impl DeckChain {
 
         self.blockchain.add_block(vec![transaction])?;
         self.save()?;
-        println!("ReleaseSet transaction inserted successfully.");
+        tracing::info!("ReleaseSet transaction inserted successfully.");
         Ok(())
     }
 
@@ -142,20 +141,20 @@ impl DeckChain {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::blockchain::testing::init_test_data_dir;
+    use crate::blockchain::testing::init_test_config;
 
     #[test]
     fn test_release_series_not_found() {
-        let testing_path = init_test_data_dir();
-        let deckchain = DeckChain::new(&testing_path).unwrap();
+        let (config, _tmp) = init_test_config();
+        let deckchain = DeckChain::new(&config).unwrap();
         let series_data = deckchain.card_series_release("LEGACYDECK-1");
         assert!(series_data.is_err());
     }
 
     #[test]
     fn test_release_series() {
-        let testing_path = init_test_data_dir();
-        let mut deckchain = DeckChain::new(&testing_path).unwrap();
+        let (config, _tmp) = init_test_config();
+        let mut deckchain = DeckChain::new(&config).unwrap();
         let series_file = "test/series.json".to_string();
         let release_result = deckchain.do_release_series(series_file);
         assert!(release_result.is_ok());
@@ -166,8 +165,8 @@ mod tests {
 
     #[test]
     fn test_release_series_twice() {
-        let testing_path = init_test_data_dir();
-        let mut deckchain = DeckChain::new(&testing_path).unwrap();
+        let (config, _tmp) = init_test_config();
+        let mut deckchain = DeckChain::new(&config).unwrap();
         let series_file = "test/series.json".to_string();
 
         let release_result = deckchain.do_release_series(series_file.clone());

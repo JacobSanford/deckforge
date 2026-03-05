@@ -35,17 +35,16 @@ async fn get_blockchain(State(state): State<Arc<AppState>>) -> impl IntoResponse
     }
 }
 
-pub async fn start_server(config_path: String) -> anyhow::Result<()> {
-    let config = Config::load(config_path.as_str())?;
-
+pub async fn start_server(config: Config) -> crate::error::Result<()> {
+    let listen_addr = config.listen_addr().to_string();
     let state = Arc::new(AppState { config });
 
     let app = Router::new()
         .route("/blockchain", get(get_blockchain))
         .with_state(state);
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:3000").await?;
-    println!("Listening on http://{}", listener.local_addr()?);
+    let listener = tokio::net::TcpListener::bind(&listen_addr).await?;
+    tracing::info!("Listening on http://{}", listener.local_addr()?);
     axum::serve(listener, app).await?;
 
     Ok(())
@@ -58,38 +57,52 @@ pub mod tests {
     use tempfile::TempDir;
     use tokio::task;
 
+    fn init_test_config() -> (Config, TempDir) {
+        let tmp_dir = TempDir::new().unwrap();
+        let data_dir_path = format!("{}/data", tmp_dir.path().to_str().unwrap());
+        std::fs::create_dir(&data_dir_path).unwrap();
+
+        let config = Config {
+            data_dir: data_dir_path,
+            listen_addr: Some("127.0.0.1:0".to_string()),
+            authorized_keys_path: None,
+        };
+
+        (config, tmp_dir)
+    }
+
     #[tokio::test]
     async fn test_get_blockchain() {
-        spawn_test_server().await;
-        let (body, status) = send_test_get_request("/blockchain").await;
+        let base_url = spawn_test_server().await;
+        let (body, status) = send_test_get_request(&base_url, "/blockchain").await;
         assert_eq!(status, 200);
         assert!(body.contains("Init"));
     }
 
     #[tokio::test]
     async fn test_get_nonexistent_route() {
-        spawn_test_server().await;
-        let (_body, status) = send_test_get_request("/nonexistent").await;
+        let base_url = spawn_test_server().await;
+        let (_body, status) = send_test_get_request(&base_url, "/nonexistent").await;
         assert_eq!(status, 404);
     }
 
     #[tokio::test]
     async fn test_get_blockchain_method_not_allowed() {
-        spawn_test_server().await;
+        let base_url = spawn_test_server().await;
         let client = reqwest::Client::new();
         let resp = client
-            .post("http://127.0.0.1:3000/blockchain")
+            .post(format!("{}/blockchain", base_url))
             .send()
             .await
             .unwrap();
         assert_eq!(resp.status(), 405);
     }
 
-    async fn wait_for_server_up() {
+    async fn wait_for_server_up(base_url: &str) {
         let client = reqwest::Client::new();
         loop {
             if client
-                .get("http://127.0.0.1:3000/blockchain")
+                .get(format!("{}/blockchain", base_url))
                 .send()
                 .await
                 .is_ok()
@@ -100,10 +113,10 @@ pub mod tests {
         }
     }
 
-    async fn send_test_get_request(endpoint: &str) -> (String, u16) {
+    async fn send_test_get_request(base_url: &str, endpoint: &str) -> (String, u16) {
         let client = reqwest::Client::new();
         let resp = client
-            .get(format!("http://127.0.0.1:3000{}", endpoint))
+            .get(format!("{}{}", base_url, endpoint))
             .send()
             .await
             .unwrap();
@@ -113,35 +126,26 @@ pub mod tests {
     }
 
     async fn spawn_test_server() -> String {
-        let test_config_path = init_test_data_dir();
-        let config_path_clone = test_config_path.clone();
+        let (config, _tmp_dir) = init_test_config();
+        let listen_addr = config.listen_addr().to_string();
+        let state = Arc::new(AppState { config });
+
+        let app = Router::new()
+            .route("/blockchain", get(get_blockchain))
+            .with_state(state);
+
+        let listener = tokio::net::TcpListener::bind(&listen_addr).await.unwrap();
+        let local_addr = listener.local_addr().unwrap();
+        let base_url = format!("http://{}", local_addr);
+
         task::spawn(async move {
-            start_server(config_path_clone).await.unwrap();
+            axum::serve(listener, app).await.unwrap();
         });
-        wait_for_server_up().await;
-        test_config_path
-    }
 
-    fn init_test_data_dir() -> String {
-        let tmp_dir = TempDir::new().unwrap();
-        let tmp_path = tmp_dir.into_path();
-        let tmp_dir_path = tmp_path.to_str().unwrap().to_string();
+        // Keep _tmp_dir alive by leaking it (test-only)
+        std::mem::forget(_tmp_dir);
 
-        let data_dir_path = format!("{}/data", tmp_dir_path);
-        std::fs::create_dir(&data_dir_path).unwrap();
-
-        let config_path = "config.toml";
-        let tmp_config_file_path = format!("{}/config.toml", tmp_dir_path);
-
-        let config_file = std::fs::read_to_string(config_path).unwrap();
-        let config_toml: serde_json::Value = toml::from_str(&config_file).unwrap();
-
-        let mut updated = config_toml;
-        updated["data_dir"] = serde_json::Value::String(data_dir_path);
-
-        let updated_toml = toml::to_string(&updated).unwrap();
-        std::fs::write(&tmp_config_file_path, updated_toml).unwrap();
-
-        tmp_config_file_path
+        wait_for_server_up(&base_url).await;
+        base_url
     }
 }

@@ -1,11 +1,13 @@
 use dialoguer::{Confirm, Input};
 
 use crate::auth;
+use crate::config::Config;
 use crate::crypto::keypair::KeyPair;
+use crate::error::{DeckForgeError, Result};
 
 /// Command: Generates a new Keypair, writing to a PEM file.
 /// Adds the public key to an authorized_keys file.
-pub fn generate_key(label: Option<String>, expiry: Option<String>) -> anyhow::Result<()> {
+pub fn generate_key(label: Option<String>, expiry: Option<String>, config: &Config) -> Result<()> {
     let keypair = KeyPair::new();
     let public_key = hex::encode(keypair.public_key);
     let secret_key = hex::encode(&keypair.secret_key[..]);
@@ -14,7 +16,8 @@ pub fn generate_key(label: Option<String>, expiry: Option<String>) -> anyhow::Re
         Some(l) => l,
         None => Input::new()
             .with_prompt("Enter a label for the API key")
-            .interact_text()?,
+            .interact_text()
+            .map_err(|e| DeckForgeError::Dialoguer(e.to_string()))?,
     };
 
     let expiry = match expiry {
@@ -22,25 +25,28 @@ pub fn generate_key(label: Option<String>, expiry: Option<String>) -> anyhow::Re
         None => Input::new()
             .with_prompt("Enter an expiry date for the API key (ISO 8601 format)")
             .default("2099-12-31T23:59:59Z".to_string())
-            .interact_text()?,
+            .interact_text()
+            .map_err(|e| DeckForgeError::Dialoguer(e.to_string()))?,
     };
 
-    let mut authorized_keys = auth::keys::AuthorizedKeys::load_from_file("authorized_keys.json")
+    let auth_keys_path = config.authorized_keys_path();
+    let mut authorized_keys = auth::keys::AuthorizedKeys::load_from_file(auth_keys_path)
         .unwrap_or_else(|_| auth::keys::AuthorizedKeys::new());
 
     if authorized_keys.is_key_authorized(&public_key) {
-        println!("Key already exists in authorized_keys file.");
+        tracing::warn!("Key already exists in authorized_keys file.");
     } else {
         let confirm = Confirm::new()
             .with_prompt("Do you want to add this key to the authorized_keys file?")
-            .interact()?;
+            .interact()
+            .map_err(|e| DeckForgeError::Dialoguer(e.to_string()))?;
 
         if confirm {
             authorized_keys.add_key(label.clone(), public_key.clone(), expiry.clone());
-            authorized_keys.save_to_file("authorized_keys.json")?;
-            println!("Key added to authorized_keys file.");
+            authorized_keys.save_to_file(auth_keys_path)?;
+            tracing::info!("Key added to authorized_keys file.");
         } else {
-            println!("Key not added to authorized_keys file.");
+            tracing::info!("Key not added to authorized_keys file.");
         }
     }
 
