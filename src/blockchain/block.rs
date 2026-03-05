@@ -48,7 +48,7 @@ impl Block {
 
     pub fn hash(&self) -> String {
         let mut hasher = Sha3_256::new();
-        let tx_json = serde_json::to_string(&self.transactions).unwrap_or_default();
+        let tx_json = serde_json::to_string(&self.transactions).expect("transactions must be serializable");
         let data = format!(
             "{}{}{}{}",
             self.index, self.previous_hash, self.timestamp, tx_json
