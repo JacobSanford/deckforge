@@ -40,6 +40,12 @@ pub enum DeckForgeError {
 
     #[error("Invalid public key length: expected 33 bytes, got {len}")]
     InvalidPublicKeyLength { len: usize },
+
+    #[error("Dialoguer error: {0}")]
+    Dialoguer(String),
+
+    #[error("Chrono parse error: {0}")]
+    Chrono(String),
 }
 
 pub type Result<T> = std::result::Result<T, DeckForgeError>;

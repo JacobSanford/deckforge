@@ -28,7 +28,7 @@ impl AuthorizedKeys {
         self.keys.push(key);
     }
 
-    pub fn save_to_file(&self, file_path: &str) -> anyhow::Result<()> {
+    pub fn save_to_file(&self, file_path: &str) -> crate::error::Result<()> {
         let json = serde_json::to_string_pretty(&self)?;
         if let Some(parent) = Path::new(file_path).parent() {
             fs::create_dir_all(parent)?;
@@ -37,7 +37,7 @@ impl AuthorizedKeys {
         Ok(())
     }
 
-    pub fn load_from_file(file_path: &str) -> anyhow::Result<Self> {
+    pub fn load_from_file(file_path: &str) -> crate::error::Result<Self> {
         let data = fs::read_to_string(file_path)?;
         let keys: AuthorizedKeys = serde_json::from_str(&data)?;
         Ok(keys)
