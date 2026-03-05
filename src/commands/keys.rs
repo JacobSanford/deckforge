@@ -1,3 +1,4 @@
+use chrono::{DateTime, Duration, Utc};
 use dialoguer::{Confirm, Input};
 
 use crate::auth;
@@ -20,13 +21,19 @@ pub fn generate_key(label: Option<String>, expiry: Option<String>, config: &Conf
             .map_err(|e| DeckForgeError::Dialoguer(e.to_string()))?,
     };
 
-    let expiry = match expiry {
-        Some(e) => e,
-        None => Input::new()
-            .with_prompt("Enter an expiry date for the API key (ISO 8601 format)")
-            .default("2099-12-31T23:59:59Z".to_string())
-            .interact_text()
-            .map_err(|e| DeckForgeError::Dialoguer(e.to_string()))?,
+    let default_expiry = Utc::now() + Duration::days(365);
+    let expiry: DateTime<Utc> = match expiry {
+        Some(e) => e.parse::<DateTime<Utc>>()
+            .map_err(|e| DeckForgeError::Chrono(e.to_string()))?,
+        None => {
+            let expiry_str: String = Input::new()
+                .with_prompt("Enter an expiry date for the API key (ISO 8601 format)")
+                .default(default_expiry.to_rfc3339())
+                .interact_text()
+                .map_err(|e| DeckForgeError::Dialoguer(e.to_string()))?;
+            expiry_str.parse::<DateTime<Utc>>()
+                .map_err(|e| DeckForgeError::Chrono(e.to_string()))?
+        }
     };
 
     let auth_keys_path = config.authorized_keys_path();
@@ -42,7 +49,7 @@ pub fn generate_key(label: Option<String>, expiry: Option<String>, config: &Conf
             .map_err(|e| DeckForgeError::Dialoguer(e.to_string()))?;
 
         if confirm {
-            authorized_keys.add_key(label.clone(), public_key.clone(), expiry.clone());
+            authorized_keys.add_key(label.clone(), public_key.clone(), expiry);
             authorized_keys.save_to_file(auth_keys_path)?;
             tracing::info!("Key added to authorized_keys file.");
         } else {
@@ -53,6 +60,6 @@ pub fn generate_key(label: Option<String>, expiry: Option<String>, config: &Conf
     println!("Public Key: {}", public_key);
     println!("Secret Key: {}", secret_key);
     println!("Label: {}", label);
-    println!("Expiry: {}", expiry);
+    println!("Expiry: {}", expiry.to_rfc3339());
     Ok(())
 }

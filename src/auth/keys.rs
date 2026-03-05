@@ -1,15 +1,22 @@
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::Path;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AuthorizedKey {
     pub label: String,
     pub public_key: String,
-    pub expiry: String,
+    pub expiry: DateTime<Utc>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+impl AuthorizedKey {
+    pub fn is_expired(&self) -> bool {
+        Utc::now() > self.expiry
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AuthorizedKeys {
     pub keys: Vec<AuthorizedKey>,
 }
@@ -19,7 +26,7 @@ impl AuthorizedKeys {
         AuthorizedKeys { keys: Vec::new() }
     }
 
-    pub fn add_key(&mut self, label: String, public_key: String, expiry: String) {
+    pub fn add_key(&mut self, label: String, public_key: String, expiry: DateTime<Utc>) {
         let key = AuthorizedKey {
             label,
             public_key,
@@ -44,6 +51,8 @@ impl AuthorizedKeys {
     }
 
     pub fn is_key_authorized(&self, public_key: &str) -> bool {
-        self.keys.iter().any(|key| key.public_key == public_key)
+        self.keys
+            .iter()
+            .any(|key| key.public_key == public_key && !key.is_expired())
     }
 }

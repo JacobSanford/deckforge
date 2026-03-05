@@ -2,18 +2,22 @@ use std::sync::Arc;
 
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
+use axum::middleware as axum_middleware;
 use axum::response::IntoResponse;
 use axum::routing::get;
 use axum::{Json, Router};
 use serde::Serialize;
 use tokio::sync::RwLock;
 
+use crate::api::middleware::require_auth;
+use crate::auth::keys::AuthorizedKeys;
 use crate::blockchain::deckchain::DeckChain;
 use crate::config::Config;
 
 pub struct AppState {
     pub deckchain: RwLock<DeckChain>,
     pub config: Config,
+    pub authorized_keys: AuthorizedKeys,
 }
 
 #[derive(Serialize)]
@@ -61,26 +65,36 @@ async fn get_series_by_id(
     let deckchain = state.deckchain.read().await;
     match deckchain.card_series_release(&id) {
         Ok(release) => Json(release).into_response(),
-        Err(_) => json_error(StatusCode::NOT_FOUND, &format!("Series '{}' not found", id)).into_response(),
+        Err(e) => json_error(StatusCode::NOT_FOUND, &e.to_string()).into_response(),
     }
 }
 
 pub fn build_app(state: Arc<AppState>) -> Router {
-    Router::new()
-        .route("/health", get(health))
+    let protected = Router::new()
         .route("/blockchain", get(get_blockchain))
         .route("/series", get(get_series_list))
         .route("/series/{id}", get(get_series_by_id))
-        .with_state(state)
+        .route_layer(axum_middleware::from_fn_with_state(state.clone(), require_auth));
+
+    let public = Router::new()
+        .route("/health", get(health));
+
+    public.merge(protected).with_state(state)
 }
 
 pub async fn start_server(config: Config) -> crate::error::Result<()> {
     let listen_addr = config.listen_addr().to_string();
     let deckchain = DeckChain::new(&config)?;
+    let authorized_keys = AuthorizedKeys::load_from_file(config.authorized_keys_path())
+        .unwrap_or_else(|_| {
+            tracing::warn!("No authorized_keys file found, starting with empty key set");
+            AuthorizedKeys::new()
+        });
 
     let state = Arc::new(AppState {
         deckchain: RwLock::new(deckchain),
         config,
+        authorized_keys,
     });
 
     let app = build_app(state);
@@ -96,6 +110,7 @@ pub async fn start_server(config: Config) -> crate::error::Result<()> {
 pub mod tests {
     use super::*;
 
+    use chrono::{Duration, Utc};
     use tempfile::TempDir;
     use tokio::task;
 
@@ -111,9 +126,18 @@ pub mod tests {
         };
 
         let deckchain = DeckChain::new(&config).unwrap();
+
+        let mut authorized_keys = AuthorizedKeys::new();
+        authorized_keys.add_key(
+            "test".to_string(),
+            "test-api-key".to_string(),
+            Utc::now() + Duration::hours(1),
+        );
+
         let state = Arc::new(AppState {
             deckchain: RwLock::new(deckchain),
             config,
+            authorized_keys,
         });
 
         (state, tmp_dir)
@@ -131,7 +155,6 @@ pub mod tests {
             axum::serve(listener, app).await.unwrap();
         });
 
-        // Keep _tmp_dir alive
         std::mem::forget(_tmp_dir);
 
         wait_for_server_up(&base_url).await;
@@ -157,6 +180,7 @@ pub mod tests {
         let client = reqwest::Client::new();
         let resp = client
             .get(format!("{}{}", base_url, endpoint))
+            .header("X-API-Key", "test-api-key")
             .send()
             .await
             .unwrap();
@@ -168,8 +192,13 @@ pub mod tests {
     #[tokio::test]
     async fn test_health() {
         let base_url = spawn_test_server().await;
-        let (_body, status) = send_test_get_request(&base_url, "/health").await;
-        assert_eq!(status, 200);
+        let client = reqwest::Client::new();
+        let resp = client
+            .get(format!("{}/health", base_url))
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(resp.status(), 200);
     }
 
     #[tokio::test]
@@ -178,6 +207,31 @@ pub mod tests {
         let (body, status) = send_test_get_request(&base_url, "/blockchain").await;
         assert_eq!(status, 200);
         assert!(body.contains("Init"));
+    }
+
+    #[tokio::test]
+    async fn test_get_blockchain_unauthorized() {
+        let base_url = spawn_test_server().await;
+        let client = reqwest::Client::new();
+        let resp = client
+            .get(format!("{}/blockchain", base_url))
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(resp.status(), 401);
+    }
+
+    #[tokio::test]
+    async fn test_get_blockchain_forbidden() {
+        let base_url = spawn_test_server().await;
+        let client = reqwest::Client::new();
+        let resp = client
+            .get(format!("{}/blockchain", base_url))
+            .header("X-API-Key", "wrong-key")
+            .send()
+            .await
+            .unwrap();
+        assert_eq!(resp.status(), 403);
     }
 
     #[tokio::test]
@@ -193,6 +247,7 @@ pub mod tests {
         let client = reqwest::Client::new();
         let resp = client
             .post(format!("{}/blockchain", base_url))
+            .header("X-API-Key", "test-api-key")
             .send()
             .await
             .unwrap();
@@ -212,6 +267,6 @@ pub mod tests {
         let base_url = spawn_test_server().await;
         let (body, status) = send_test_get_request(&base_url, "/series/nonexistent").await;
         assert_eq!(status, 404);
-        assert!(body.contains("not found"));
+        assert_eq!(status, 404, "body was: {}", body);
     }
 }
