@@ -1,1 +1,7 @@
 data_dir = "data"
+
+# Optional: listen address for the API server (default: "127.0.0.1:3000")
+# listen_addr = "127.0.0.1:3000"
+
+# Optional: path to authorized keys file (default: "authorized_keys.json")
+# authorized_keys_path = "authorized_keys.json"
